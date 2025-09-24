@@ -20,7 +20,7 @@ Installs the modules needed for Plex or Jellyfin hardware transcoding in DS425+ 
 
 You need to schedule this script to run as root at boot. It needs to run every time the NAS boots up.
 
-See [How to run from task scheduler](https://github.com/007revad/Transcode_for_x25/blob/main/how_to_run_from_scheduler.md)
+See [How to schedule](https://github.com/007revad/Transcode_for_x25/blob/main/how_to_schedule.md)
 
 ### To run the script via SSH
 
