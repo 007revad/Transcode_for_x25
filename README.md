@@ -51,10 +51,10 @@ If the script won't run check the following:
 
 ### Screenshots
 
-<!--- <p align="center">Description of image 1 goes here</p> --->
-<p align="center"><img src="/images/IMAGE_NAME.png"></p>
+<p align="center">Running script via SSH</p>
+<p align="center"><img src="/images/image1.png"></p>
 
 <br>
 
-<!--- <p align="center">Description of image 2 goes here</p> --->
-<p align="center"><img src="/images/IMAGE_NAME.png"></p>
+<p align="center">Plex HW Transcoding working</p>
+<p align="center"><img src="/images/working.png"></p>
