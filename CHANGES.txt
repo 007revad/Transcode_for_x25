@@ -2,6 +2,8 @@ v1.1.0
 - Added auto update option so the script can update itself when there's a newer version available.
     --autoupdate=AGE  Auto update script (useful when script is scheduled).
                       AGE is how many days old a release must be before auto-updating. AGE must be a number: 0 or greater.
+- Added -v --version option.
+- Added -h --help option.
 
 v1.0.0
 - First release.
