@@ -25,6 +25,19 @@ The script automates the steps outlined by Luka Manestar on Blackvoid.club here:
 
 On subsequent runs steps 4, 5 and 6 would be skipped (because the **x25_drivers** folder and **x25_transcode_modules.zip** file already exist).
 
+### Options when running the script
+
+There are optional flags you can use when running the script:
+
+```
+Options:
+  -h, --help            Show this help message
+  -v, --version         Show the script version
+      --autoupdate=AGE  Auto update script (useful when script is scheduled)
+                          AGE is how many days old a release must be before
+                          auto-updating. AGE must be a number: 0 or greater
+```
+
 ### Download the script
 
 1. Download the latest version _Source code (zip)_ from https://github.com/007revad/Transcode_for_x25/releases
