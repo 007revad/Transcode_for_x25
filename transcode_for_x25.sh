@@ -4,7 +4,7 @@
 # https://www.blackvoid.club/content/files/2025/09/x25_hw_transcode_modules.zip
 #----------------------------------------------------------------------------------
 
-scriptver="v1.1.0"
+scriptver="v1.1.1"
 script=Transcode_for_x25
 repo="007revad/Transcode_for_x25"
 scriptname=transcode_for_x25
@@ -372,7 +372,7 @@ load_module(){
 
 remove_module(){ 
     if [[ $1 ]]; then
-        if rmmod i915 "$1"; then
+        if rmmod "$1"; then
             echo "Removed $1"
         else
             ding
