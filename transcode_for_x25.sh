@@ -454,15 +454,15 @@ errors="0"
 if [[ $restore == "yes" ]]; then
     # Remove the good modules
     echo -e "\nRemoving script installed modules:"
-    remove_module "$x25_drivers_dir"/dmabuf.ko
-    remove_module "$x25_drivers_dir"/drm.ko
-    remove_module "$x25_drivers_dir"/drm_kms_helper.ko
-    remove_module "$x25_drivers_dir"/drm_display_helper.ko
-    remove_module "$x25_drivers_dir"/drm_buddy.ko
-    remove_module "$x25_drivers_dir"/ttm.ko
-    remove_module "$x25_drivers_dir"/intel-gtt.ko
-    remove_module "$x25_drivers_dir"/i915-compat.ko
-    remove_module "$x25_drivers_dir"/i915.ko
+    remove_module dmabuf.ko
+    remove_module drm.ko
+    remove_module drm_kms_helper.ko
+    remove_module drm_display_helper.ko
+    remove_module drm_buddy.ko
+    remove_module ttm.ko
+    remove_module intel-gtt.ko
+    remove_module i915-compat.ko
+    remove_module i915.ko
 
     # Load default modules
     echo -e "\nLoading default modules:"
