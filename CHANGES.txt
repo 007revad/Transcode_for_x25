@@ -1,3 +1,7 @@
+v1.2.2
+- Added -r and --restore option to restore the default modules. So you can reload the default modules without needing to reboot.
+- Bug fix for saying "Failed to remove" if script failed to load module.
+
 v1.1.1
 - Bug fix for remove_module function.
   - See https://www.synoforum.com/threads/225-or-425-owners-plex-hw-transcoding.15094/post-75947

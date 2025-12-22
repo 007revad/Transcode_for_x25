@@ -4,7 +4,7 @@
 # https://www.blackvoid.club/content/files/2025/09/x25_hw_transcode_modules.zip
 #----------------------------------------------------------------------------------
 
-scriptver="v1.1.1"
+scriptver="v1.2.2"
 script=Transcode_for_x25
 repo="007revad/Transcode_for_x25"
 scriptname=transcode_for_x25
@@ -84,6 +84,7 @@ Usage: $(basename "$0") [options]
 Options:
   -h, --help            Show this help message
   -v, --version         Show the script version
+  -r, --restore         Restore default modules
       --autoupdate=AGE  Auto update script (useful when script is scheduled)
                           AGE is how many days old a release must be before
                           auto-updating. AGE must be a number: 0 or greater
@@ -110,7 +111,7 @@ autoupdate=""
 
 # Check for flags with getopt
 if options="$(getopt -o abcdefghijklmnopqrstuvwxyz0123456789 -l \
-    help,version,autoupdate:,log,debug -- "$@")"; then
+    help,version,autoupdate:restore,log,debug -- "$@")"; then
     eval set -- "$options"
     while true; do
         case "${1,,}" in
@@ -125,6 +126,9 @@ if options="$(getopt -o abcdefghijklmnopqrstuvwxyz0123456789 -l \
                 ;;
             -d|--debug)         # Show and log debug info (currently unused)
                 debug=yes
+                ;;
+            -r|--restore)       # Restore default modules
+                restore=yes
                 ;;
             --autoupdate)       # Auto update script
                 autoupdate=yes
@@ -360,7 +364,7 @@ load_module(){
             echo "Loaded $1"
         else
             ding
-            echo -e "${Error}ERROR${Off} Failed to remove $1"
+            echo -e "${Error}ERROR${Off} Failed to load $1"
         fi
     else
         ding
@@ -447,23 +451,43 @@ fi
 
 errors="0"
 
-# Remove default modules
-echo -e "\nRemoving default modules:"
-remove_module i915
-remove_module drm_kms_helper
-remove_module drm
+if [[ $restore == "yes" ]]; then
+    # Remove the good modules
+    echo -e "\nRemoving script installed modules:"
+    remove_module "$x25_drivers_dir"/dmabuf.ko
+    remove_module "$x25_drivers_dir"/drm.ko
+    remove_module "$x25_drivers_dir"/drm_kms_helper.ko
+    remove_module "$x25_drivers_dir"/drm_display_helper.ko
+    remove_module "$x25_drivers_dir"/drm_buddy.ko
+    remove_module "$x25_drivers_dir"/ttm.ko
+    remove_module "$x25_drivers_dir"/intel-gtt.ko
+    remove_module "$x25_drivers_dir"/i915-compat.ko
+    remove_module "$x25_drivers_dir"/i915.ko
 
-# Load the good modules
-echo -e "\nLoading good modules:"
-load_module "$x25_drivers_dir"/dmabuf.ko
-load_module "$x25_drivers_dir"/drm.ko
-load_module "$x25_drivers_dir"/drm_kms_helper.ko
-load_module "$x25_drivers_dir"/drm_display_helper.ko
-load_module "$x25_drivers_dir"/drm_buddy.ko
-load_module "$x25_drivers_dir"/ttm.ko
-load_module "$x25_drivers_dir"/intel-gtt.ko
-load_module "$x25_drivers_dir"/i915-compat.ko
-load_module "$x25_drivers_dir"/i915.ko
+    # Load default modules
+    echo -e "\nLoading default modules:"
+    load_module /usr/lib/modules/i915
+    load_module /usr/lib/modules/drm_kms_helper
+    load_module /usr/lib/modules/drm
+else
+    # Remove default modules
+    echo -e "\nRemoving default modules:"
+    remove_module i915
+    remove_module drm_kms_helper
+    remove_module drm
+
+    # Load the good modules
+    echo -e "\nLoading good modules:"
+    load_module "$x25_drivers_dir"/dmabuf.ko
+    load_module "$x25_drivers_dir"/drm.ko
+    load_module "$x25_drivers_dir"/drm_kms_helper.ko
+    load_module "$x25_drivers_dir"/drm_display_helper.ko
+    load_module "$x25_drivers_dir"/drm_buddy.ko
+    load_module "$x25_drivers_dir"/ttm.ko
+    load_module "$x25_drivers_dir"/intel-gtt.ko
+    load_module "$x25_drivers_dir"/i915-compat.ko
+    load_module "$x25_drivers_dir"/i915.ko
+fi
 
 
 if [[ $errors -gt "0" ]]; then
