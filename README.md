@@ -33,6 +33,7 @@ There are optional flags you can use when running the script:
 Options:
   -h, --help            Show this help message
   -v, --version         Show the script version
+  -r, --restore         Restore default modules
       --autoupdate=AGE  Auto update script (useful when script is scheduled)
                           AGE is how many days old a release must be before
                           auto-updating. AGE must be a number: 0 or greater
