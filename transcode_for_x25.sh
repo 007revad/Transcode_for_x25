@@ -111,7 +111,7 @@ autoupdate=""
 
 # Check for flags with getopt
 if options="$(getopt -o abcdefghijklmnopqrstuvwxyz0123456789 -l \
-    help,version,autoupdate:restore,log,debug -- "$@")"; then
+    help,version,autoupdate:,restore,log,debug -- "$@")"; then
     eval set -- "$options"
     while true; do
         case "${1,,}" in
@@ -454,21 +454,21 @@ errors="0"
 if [[ $restore == "yes" ]]; then
     # Remove the good modules
     echo -e "\nRemoving script installed modules:"
-    remove_module dmabuf.ko
-    remove_module drm.ko
-    remove_module drm_kms_helper.ko
-    remove_module drm_display_helper.ko
-    remove_module drm_buddy.ko
-    remove_module ttm.ko
-    remove_module intel-gtt.ko
-    remove_module i915-compat.ko
-    remove_module i915.ko
+    remove_module i915
+	remove_module i915-compat
+	remove_module intel-gtt
+	remove_module ttm
+	remove_module drm_buddy
+	remove_module drm_display_helper
+	remove_module drm_kms_helper
+	remove_module drm
+	remove_module dmabuf
 
     # Load default modules
     echo -e "\nLoading default modules:"
-    load_module /usr/lib/modules/i915
-    load_module /usr/lib/modules/drm_kms_helper
-    load_module /usr/lib/modules/drm
+    load_module /usr/lib/modules/drm.ko
+	load_module /usr/lib/modules/drm_kms_helper.ko
+	load_module /usr/lib/modules/i915.ko
 else
     # Remove default modules
     echo -e "\nRemoving default modules:"
