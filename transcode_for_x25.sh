@@ -2,9 +2,11 @@
 #----------------------------------------------------------------------------------
 # https://www.blackvoid.club/unlocking-plex-hw-transcoding-on-x25-synology-models/
 # https://www.blackvoid.club/content/files/2025/09/x25_hw_transcode_modules.zip
+# New single file version with HDR to SDR tone mapping bug fix:
+# https://www.blackvoid.club/content/files/2026/02/x25_hw_transcode_module_v2.zip
 #----------------------------------------------------------------------------------
 
-scriptver="v1.2.2"
+scriptver="v2.2.3"
 script=Transcode_for_x25
 repo="007revad/Transcode_for_x25"
 scriptname=transcode_for_x25
@@ -410,8 +412,9 @@ fi
 # modinfo /path/to/your/module.ko
 
 
-url="https://www.blackvoid.club/content/files/2025/09/x25_hw_transcode_modules.zip"
-zipfile="$scriptpath/x25_drivers/x25_hw_transcode_modules.zip"
+url="https://www.blackvoid.club/content/files/2026/02/x25_hw_transcode_module_v2.zip"
+zipfile="$scriptpath/x25_drivers/x25_hw_transcode_module_v2.zip"
+zip="x25_hw_transcode_module_v2.zip"
 x25_drivers_dir="$scriptpath/x25_drivers"
 
 if [[ ! -d "$x25_drivers_dir" ]]; then
@@ -424,20 +427,20 @@ if cd "$x25_drivers_dir"; then
         echo -e "\nDownloading transcode modules" 
         if ! curl -JLO -m 30 --connect-timeout 5 "$url"; then
             ding
-            echo -e "${Error}ERROR${Off} Failed to download x25_hw_transcode_modules.zip!"
+            echo -e "${Error}ERROR${Off} Failed to download ${zip}!"
             exit 1
         else
             if [[ -f "$zipfile" ]]; then
                 # Extract zip file
-                echo -e "\nExtracting x25_hw_transcode_modules.zip" 
+                echo -e "\nExtracting ${zip}" 
                 if ! 7z e "$zipfile" >/dev/null; then
                     ding
-                    echo -e "${Error}ERROR${Off} Failed to extract x25_hw_transcode_modules.zip!"
+                    echo -e "${Error}ERROR${Off} Failed to extract ${zip}!"
                     exit 1
                 fi
             else
                 ding
-                echo -e "${Error}ERROR${Off} Missing file: x25_hw_transcode_modules.zip"
+                echo -e "${Error}ERROR${Off} Missing file: ${zip}"
                 exit 1
             fi
         fi
@@ -473,19 +476,19 @@ else
     # Remove default modules
     echo -e "\nRemoving default modules:"
     remove_module i915
-    remove_module drm_kms_helper
-    remove_module drm
+    #remove_module drm_kms_helper
+    #remove_module drm
 
     # Load the good modules
     echo -e "\nLoading good modules:"
-    load_module "$x25_drivers_dir"/dmabuf.ko
-    load_module "$x25_drivers_dir"/drm.ko
-    load_module "$x25_drivers_dir"/drm_kms_helper.ko
-    load_module "$x25_drivers_dir"/drm_display_helper.ko
-    load_module "$x25_drivers_dir"/drm_buddy.ko
-    load_module "$x25_drivers_dir"/ttm.ko
-    load_module "$x25_drivers_dir"/intel-gtt.ko
-    load_module "$x25_drivers_dir"/i915-compat.ko
+    #load_module "$x25_drivers_dir"/dmabuf.ko
+    #load_module "$x25_drivers_dir"/drm.ko
+    #load_module "$x25_drivers_dir"/drm_kms_helper.ko
+    #load_module "$x25_drivers_dir"/drm_display_helper.ko
+    #load_module "$x25_drivers_dir"/drm_buddy.ko
+    #load_module "$x25_drivers_dir"/ttm.ko
+    #load_module "$x25_drivers_dir"/intel-gtt.ko
+    #load_module "$x25_drivers_dir"/i915-compat.ko
     load_module "$x25_drivers_dir"/i915.ko
 fi
 
