@@ -12,6 +12,14 @@ Installs the modules needed for Plex or Jellyfin hardware transcoding in DS425+ 
 
 The script automates the steps outlined by Luka Manestar on Blackvoid.club here: [Unlocking plex HW transcoding on X25 Synology models](https://www.blackvoid.club/unlocking-plex-hw-transcoding-on-x25-synology-models/)
 
+### Update
+
+Version 2 of the script includes the HDR to SDR tone mapping bug fix.
+
+> ***NOTE:*** <br>
+> If you have previously run version 1 of the script you should run the script (either version) with the `--restore` option to remove the old drivers. 
+> Then run the v2 script to install the latest driver.
+
 ### What the script does
 
 1. Checks it is running as root.
