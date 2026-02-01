@@ -1,3 +1,7 @@
+v2.2.3
+- Updated to install latest driver that fixes the HDR to SDR tone mapping bug fix.
+  - If you have previously run version 1 of the script you should run the script (either version) with the --restore option to remove the old drivers. Then run the v2 script to install the latest driver.
+
 v1.2.2
 - Added -r and --restore option to restore the default modules. So you can reload the default modules without needing to reboot.
 - Bug fix for saying "Failed to remove" if script failed to load module.
