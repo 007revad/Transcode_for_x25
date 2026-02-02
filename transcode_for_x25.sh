@@ -6,7 +6,7 @@
 # https://www.blackvoid.club/content/files/2026/02/x25_hw_transcode_module_v2.zip
 #----------------------------------------------------------------------------------
 
-scriptver="v2.2.3"
+scriptver="v2.2.4"
 script=Transcode_for_x25
 repo="007revad/Transcode_for_x25"
 scriptname=transcode_for_x25
@@ -113,7 +113,7 @@ autoupdate=""
 
 # Check for flags with getopt
 if options="$(getopt -o abcdefghijklmnopqrstuvwxyz0123456789 -l \
-    help,version,autoupdate:restore,log,debug -- "$@")"; then
+    help,version,autoupdate:,restore,log,debug -- "$@")"; then
     eval set -- "$options"
     while true; do
         case "${1,,}" in
