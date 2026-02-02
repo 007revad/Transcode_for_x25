@@ -1,6 +1,6 @@
 v2.2.4
 - Bug fix for restore and autoupdate options not working. 
-  - If you have previously run version 1 of the script you should run this version with the --restore option to remove the old drivers. Then run this version without the --restore optiont to install the latest driver.
+  - If you have previously run version 1 of the script you should run this version with the --restore option to remove the old drivers. Then run this version without the --restore option to install the latest driver.
 
 v2.2.3
 - Updated to install latest driver that fixes the HDR to SDR tone mapping bug fix.
