@@ -1,3 +1,7 @@
+v2.2.5
+- Bug fix for restoring default modules.
+- Bug fix for if download x25_hw_transcode_module_v2.zip failed when v1 version had previously been downloaded and extracted.
+
 v2.2.4
 - Bug fix for restore and autoupdate options not working. 
   - If you have previously run version 1 of the script you should run this version with the --restore option to remove the old drivers. Then run this version without the --restore option to install the latest driver.
