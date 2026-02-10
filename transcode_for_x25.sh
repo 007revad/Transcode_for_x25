@@ -6,7 +6,7 @@
 # https://www.blackvoid.club/content/files/2026/02/x25_hw_transcode_module_v2.zip
 #----------------------------------------------------------------------------------
 
-scriptver="v2.2.4"
+scriptver="v2.2.5"
 script=Transcode_for_x25
 repo="007revad/Transcode_for_x25"
 scriptname=transcode_for_x25
@@ -413,9 +413,9 @@ fi
 
 
 url="https://www.blackvoid.club/content/files/2026/02/x25_hw_transcode_module_v2.zip"
-zipfile="$scriptpath/x25_drivers/x25_hw_transcode_module_v2.zip"
+zipfile="$scriptpath/x25_drivers_v2/x25_hw_transcode_module_v2.zip"
 zip="x25_hw_transcode_module_v2.zip"
-x25_drivers_dir="$scriptpath/x25_drivers"
+x25_drivers_dir="$scriptpath/x25_drivers_v2"
 
 if [[ ! -d "$x25_drivers_dir" ]]; then
     mkdir "$x25_drivers_dir"
@@ -458,20 +458,20 @@ if [[ $restore == "yes" ]]; then
     # Remove the good modules
     echo -e "\nRemoving script installed modules:"
     remove_module i915
-	remove_module i915-compat
-	remove_module intel-gtt
-	remove_module ttm
-	remove_module drm_buddy
-	remove_module drm_display_helper
-	remove_module drm_kms_helper
-	remove_module drm
-	remove_module dmabuf
+    remove_module i915-compat
+    remove_module intel-gtt
+    remove_module ttm
+    remove_module drm_buddy
+    remove_module drm_display_helper
+    remove_module drm_kms_helper
+    remove_module drm
+    remove_module dmabuf
 
     # Load default modules
     echo -e "\nLoading default modules:"
+    load_module /usr/lib/modules/i915.ko
+    load_module /usr/lib/modules/drm_kms_helper.ko
     load_module /usr/lib/modules/drm.ko
-	load_module /usr/lib/modules/drm_kms_helper.ko
-	load_module /usr/lib/modules/i915.ko
 else
     # Remove default modules
     echo -e "\nRemoving default modules:"
