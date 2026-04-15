@@ -1,15 +1,26 @@
-- name: Create driver zips
+name: Create driver zips
+
+on:
+  release:
+    types: [published]
+
+jobs:
+  attach-drivers:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Create driver zips
         run: |
           VERSION=${{ github.event.release.tag_name }}
-          cd lib
-          zip -j ../dsm73_drivers_${VERSION}.zip dsm73/*.ko
-          zip -j ../dsm72_drivers_${VERSION}.zip dsm72/*.ko
+          for dir in lib/*/; do
+            dsm_ver=$(basename "$dir")
+            zip -j "${dsm_ver}_drivers_${VERSION}.zip" "${dir}"*.ko
+          done
 
       - name: Upload to release
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
           VERSION=${{ github.event.release.tag_name }}
-          gh release upload ${VERSION} \
-            dsm73_drivers_${VERSION}.zip \
-            dsm72_drivers_${VERSION}.zip
+          gh release upload ${VERSION} *_drivers_${VERSION}.zip
