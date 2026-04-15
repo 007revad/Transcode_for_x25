@@ -6,7 +6,7 @@
 # https://www.blackvoid.club/content/files/2026/02/x25_hw_transcode_module_v2.zip
 #----------------------------------------------------------------------------------
 
-scriptver="v2.2.5"
+scriptver="v3.0.6"
 script=Transcode_for_x25
 repo="007revad/Transcode_for_x25"
 scriptname=transcode_for_x25
@@ -57,6 +57,10 @@ productversion=$(/usr/syno/bin/synogetkeyvalue /etc.defaults/VERSION productvers
 buildphase=$(/usr/syno/bin/synogetkeyvalue /etc.defaults/VERSION buildphase)
 buildnumber=$(/usr/syno/bin/synogetkeyvalue /etc.defaults/VERSION buildnumber)
 smallfixnumber=$(/usr/syno/bin/synogetkeyvalue /etc.defaults/VERSION smallfixnumber)
+
+dsm_major=$(/usr/syno/bin/synogetkeyvalue /etc.defaults/VERSION majorversion)
+dsm_minor=$(/usr/syno/bin/synogetkeyvalue /etc.defaults/VERSION minorversion)
+dsm_ver="dsm${dsm_major}${dsm_minor}"  # e.g. "dsm73"
 
 # Get CPU arch and platform_name
 arch="$(uname -m)"
@@ -378,12 +382,17 @@ load_module(){
 
 remove_module(){ 
     if [[ $1 ]]; then
-        if rmmod "$1"; then
-            echo "Removed $1"
+        local modname="${1//-/_}"
+        if lsmod | grep -q "^${modname} "; then
+            if rmmod "$1"; then
+                echo "Removed $1"
+            else
+                ding
+                echo -e "${Error}ERROR${Off} Failed to remove $1"
+                errors=$(errors +1)
+            fi
         else
-            ding
-            echo -e "${Error}ERROR${Off} Failed to remove $1"
-            errors=$(errors +1)
+            echo "Module $1 is not loaded"
         fi
     fi
 }
@@ -412,10 +421,18 @@ fi
 # modinfo /path/to/your/module.ko
 
 
-url="https://www.blackvoid.club/content/files/2026/02/x25_hw_transcode_module_v2.zip"
-zipfile="$scriptpath/x25_drivers_v2/x25_hw_transcode_module_v2.zip"
-zip="x25_hw_transcode_module_v2.zip"
-x25_drivers_dir="$scriptpath/x25_drivers_v2"
+url="https://github.com/$repo/releases/download/$scriptver/${dsm_ver}_drivers_${scriptver}.zip"
+zipfile="$scriptpath/${dsm_ver}_drivers_${scriptver}/${dsm_ver}_drivers_${scriptver}.zip"
+zip="${dsm_ver}_drivers_${scriptver}.zip"
+x25_drivers_dir="$scriptpath/${dsm_ver}_drivers_${scriptver}"
+
+# Check drivers are available for user's DSM version
+if ! curl --silent --head --fail -m 10 --connect-timeout 5 "$url" >/dev/null; then
+    ding
+    echo -e "${Error}ERROR${Off} No drivers available for DSM $productversion"
+    echo "      $url"
+    exit 1
+fi
 
 if [[ ! -d "$x25_drivers_dir" ]]; then
     mkdir "$x25_drivers_dir"
@@ -437,6 +454,8 @@ if cd "$x25_drivers_dir"; then
                     ding
                     echo -e "${Error}ERROR${Off} Failed to extract ${zip}!"
                     exit 1
+                else
+                    chmod 644 "$x25_drivers_dir"/*.ko
                 fi
             else
                 ding
@@ -466,29 +485,37 @@ if [[ $restore == "yes" ]]; then
     remove_module drm_kms_helper
     remove_module drm
     remove_module dmabuf
+    remove_module drm_panel_orientation_quirks
+    remove_module i2c-algo-bit
 
     # Load default modules
     echo -e "\nLoading default modules:"
-    load_module /usr/lib/modules/i915.ko
-    load_module /usr/lib/modules/drm_kms_helper.ko
+    load_module /usr/lib/modules/i2c-algo-bit.ko
+    load_module /usr/lib/modules/drm_panel_orientation_quirks.ko
     load_module /usr/lib/modules/drm.ko
+    load_module /usr/lib/modules/drm_kms_helper.ko
+    load_module /usr/lib/modules/i915.ko
 else
     # Remove default modules
     echo -e "\nRemoving default modules:"
     remove_module i915
-    #remove_module drm_kms_helper
-    #remove_module drm
+    remove_module drm_kms_helper
+    remove_module drm
+    remove_module drm_panel_orientation_quirks
+    remove_module i2c-algo-bit
 
     # Load the good modules
     echo -e "\nLoading good modules:"
-    #load_module "$x25_drivers_dir"/dmabuf.ko
-    #load_module "$x25_drivers_dir"/drm.ko
-    #load_module "$x25_drivers_dir"/drm_kms_helper.ko
-    #load_module "$x25_drivers_dir"/drm_display_helper.ko
-    #load_module "$x25_drivers_dir"/drm_buddy.ko
-    #load_module "$x25_drivers_dir"/ttm.ko
-    #load_module "$x25_drivers_dir"/intel-gtt.ko
-    #load_module "$x25_drivers_dir"/i915-compat.ko
+    load_module "$x25_drivers_dir"/i2c-algo-bit.ko
+    load_module "$x25_drivers_dir"/drm_panel_orientation_quirks.ko
+    load_module "$x25_drivers_dir"/dmabuf.ko
+    load_module "$x25_drivers_dir"/drm.ko
+    load_module "$x25_drivers_dir"/drm_kms_helper.ko
+    load_module "$x25_drivers_dir"/drm_display_helper.ko
+    load_module "$x25_drivers_dir"/drm_buddy.ko
+    load_module "$x25_drivers_dir"/ttm.ko
+    load_module "$x25_drivers_dir"/intel-gtt.ko
+    load_module "$x25_drivers_dir"/i915-compat.ko
     load_module "$x25_drivers_dir"/i915.ko
 fi
 
