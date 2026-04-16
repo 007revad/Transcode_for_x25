@@ -1,3 +1,9 @@
+v3.0.6
+- Uses the drivers from RROrg release 26.3.1.
+- Separate drivers available for DSM 7.2 and DSM 7.3.
+- Now only tries to remove modules if they are loaded.
+- Bug fixes for loading modules.
+
 v2.2.5
 - Bug fix for restoring default modules.
 - Bug fix for if download x25_hw_transcode_module_v2.zip failed when v1 version had previously been downloaded and extracted.

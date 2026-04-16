@@ -1,0 +1,40 @@
+name: Create driver zips
+
+on:
+  release:
+    types: [published]
+  workflow_dispatch:
+
+jobs:
+  attach-drivers:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Get version
+        id: get_version
+        run: |
+          if [[ "${{ github.event_name }}" == "release" ]]; then
+            echo "version=${{ github.event.release.tag_name }}" >> $GITHUB_OUTPUT
+          else
+            echo "version=$(gh release list --limit 1 --json tagName -q '.[0].tagName')" >> $GITHUB_OUTPUT
+          fi
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Create driver zips
+        run: |
+          VERSION=${{ steps.get_version.outputs.version }}
+          for dir in lib/*/; do
+            dsm_ver=$(basename "$dir")
+            if compgen -G "${dir}*.ko" > /dev/null; then
+              zip -j "${dsm_ver}_drivers_${VERSION}.zip" "${dir}"*.ko
+            fi
+          done
+
+      - name: Upload to release
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          VERSION=${{ steps.get_version.outputs.version }}
+          gh release upload ${VERSION} *_drivers_${VERSION}.zip --clobber
