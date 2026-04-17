@@ -69,13 +69,14 @@ jobs:
       - name: Inspect toolkit output
         if: steps.check_assets.outputs.spk_count == '0'
         run: |
-          echo "=== toolkit source ==="
-          find /toolkit/source -type f
           echo "=== toolkit result_spk ==="
           find /toolkit/result_spk -type f
           echo "=== package.tgz contents ==="
           find /toolkit/result_spk -name "package.tgz" -exec tar -tzf {} \;
-
+          echo "=== dist contents ==="
+          find ./dist -type f
+          echo "=== spk contents ==="
+          find ./dist -name "*.spk" -exec unzip -l {} \;
 
       - name: Remove debug spk and rename package
         if: steps.check_assets.outputs.spk_count == '0'
