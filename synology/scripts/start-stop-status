@@ -1,0 +1,80 @@
+#!/bin/sh
+
+set -eu
+
+PKG_MODULES="${SYNOPKG_PKGDEST}/lib/modules"
+DSM_MODULES="/usr/lib/modules"
+
+insmod_if_exists() {
+    [ -f "$1" ] && /sbin/insmod "$1" || true
+}
+
+rmmod_if_loaded() {
+    /sbin/lsmod | grep -q "^${1} " && /sbin/rmmod "$1" || true
+}
+
+load_pkg_modules() {
+    # Remove DSM's default modules (reverse load order)
+    rmmod_if_loaded i915
+    rmmod_if_loaded drm_kms_helper
+    rmmod_if_loaded drm
+    rmmod_if_loaded drm_panel_orientation_quirks
+    rmmod_if_loaded i2c-algo-bit
+
+    # Load package modules
+    insmod_if_exists "${PKG_MODULES}/i2c-algo-bit.ko"
+    insmod_if_exists "${PKG_MODULES}/drm_panel_orientation_quirks.ko"
+    insmod_if_exists "${PKG_MODULES}/dmabuf.ko"
+    insmod_if_exists "${PKG_MODULES}/drm.ko"
+    insmod_if_exists "${PKG_MODULES}/drm_kms_helper.ko"
+    insmod_if_exists "${PKG_MODULES}/drm_display_helper.ko"
+    insmod_if_exists "${PKG_MODULES}/drm_buddy.ko"
+    insmod_if_exists "${PKG_MODULES}/ttm.ko"
+    insmod_if_exists "${PKG_MODULES}/intel-gtt.ko"
+    insmod_if_exists "${PKG_MODULES}/i915-compat.ko"
+    insmod_if_exists "${PKG_MODULES}/i915.ko"
+}
+
+restore_dsm_modules() {
+    # Remove package modules (reverse load order)
+    rmmod_if_loaded i915
+    rmmod_if_loaded i915-compat
+    rmmod_if_loaded intel-gtt
+    rmmod_if_loaded ttm
+    rmmod_if_loaded drm_buddy
+    rmmod_if_loaded drm_display_helper
+    rmmod_if_loaded drm_kms_helper
+    rmmod_if_loaded drm
+    rmmod_if_loaded dmabuf
+    rmmod_if_loaded drm_panel_orientation_quirks
+    rmmod_if_loaded i2c-algo-bit
+
+    # Restore DSM's default modules
+    insmod_if_exists "${DSM_MODULES}/i2c-algo-bit.ko"
+    insmod_if_exists "${DSM_MODULES}/drm_panel_orientation_quirks.ko"
+    insmod_if_exists "${DSM_MODULES}/drm.ko"
+    insmod_if_exists "${DSM_MODULES}/drm_kms_helper.ko"
+    insmod_if_exists "${DSM_MODULES}/i915.ko"
+}
+
+case "$1" in
+    start)
+        load_pkg_modules
+        exit 0
+        ;;
+    stop)
+        restore_dsm_modules
+        exit 0
+        ;;
+    status)
+        /sbin/lsmod | grep -q "^i915 " || exit 3
+        /sbin/lsmod | grep -q "^drm_buddy " || exit 3
+        exit 0
+        ;;
+    killall)
+        exit 0
+        ;;
+    log)
+        exit 0
+        ;;
+esac
