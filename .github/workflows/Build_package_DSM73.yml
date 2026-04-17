@@ -1,4 +1,4 @@
-name: Build n Release Transcode for x25 Package
+name: DSM 7.3 Build n Release Transcode for x25 Package
 
 on:
   release:
@@ -13,15 +13,8 @@ env:
 
 jobs:
   build-spk:
-    name: Build Package
+    name: Build Package DSM 7.3
     runs-on: ubuntu-latest
-    strategy:
-      fail-fast: false
-      matrix:
-        arch: ['kvmx64']
-        #arch: ['noarch']
-        #dsm: ['7.0','7.1','7.2','7.3']
-        dsm: ['7.2','7.3']
 
     steps:
       - name: Checkout
@@ -45,11 +38,6 @@ jobs:
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
-      - name: Determine DSM suffix
-        id: dsm_suffix
-        run: |
-          echo "suffix=DSM-${{ matrix.dsm }}" >> $GITHUB_OUTPUT
-
       - name: Check if SPKs already exist in release
         id: check_assets
         run: |
@@ -60,15 +48,15 @@ jobs:
       - name: Stage DSM-version modules
         if: steps.check_assets.outputs.spk_count == '0'
         run: |
-          cp package/${{ matrix.dsm }}/*.ko src/lib/modules/
+          cp package/7.3/*.ko src/lib/modules/
 
       - name: Synology Package Builder Github Action
         if: steps.check_assets.outputs.spk_count == '0'
-        uses: tomgrv/synology-package-builder@v1.3.0
-        #uses: 007revad/synology-package-builder@main
+        #uses: tomgrv/synology-package-builder@v1.3.0
+        uses: 007revad/synology-package-builder@main
         with:
-          dsm: ${{ matrix.dsm }}
-          arch: ${{ matrix.arch }}
+          dsm: '7.3'
+          arch: 'kvmx64'
           output: ./dist
 
       - name: Remove debug spk and rename package
@@ -77,7 +65,7 @@ jobs:
           ls -l ./dist
           rm ./dist/*_debug.spk
           for f in ./dist/*.spk; do
-            mv "$f" "./dist/Transcode_geminilakenk-x86_64-${{ steps.get_latest_tag.outputs.new_tag }}-${{ steps.dsm_suffix.outputs.suffix }}.spk"
+            mv "$f" "./dist/Transcode_geminilakenk-x86_64-${{ steps.get_latest_tag.outputs.new_tag }}-DSM-7.3.spk"
           done
           ls -l ./dist
 
@@ -85,7 +73,7 @@ jobs:
         if: steps.check_assets.outputs.spk_count == '0'
         uses: actions/upload-artifact@v4
         with:
-          name: Transcode_geminilakenk-${{ steps.dsm_suffix.outputs.suffix }}
+          name: Transcode_geminilakenk-DSM-7.3
           path: ./dist/*.spk
 
       - name: Release
@@ -97,3 +85,4 @@ jobs:
           fail_on_unmatched_files: false
           files: |
             ./dist/*.spk
+

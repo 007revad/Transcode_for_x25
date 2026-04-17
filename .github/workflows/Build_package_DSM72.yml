@@ -1,0 +1,87 @@
+name: DSM 7.2 Build n Release Transcode for x25 Package
+
+on:
+  release:
+    types: [published]
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+env:
+  FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true
+
+jobs:
+  build-spk:
+    name: Build Package DSM 7.2
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Get release tag
+        id: get_latest_tag
+        run: |
+          if [ "${{ github.event_name }}" = "release" ]; then
+            echo "new_tag=${{ github.event.release.tag_name }}" >> $GITHUB_OUTPUT
+          else
+            latest_tag=$(gh release list --limit 1 --json tagName --jq '.[0].tagName')
+            if [ -z "$latest_tag" ]; then
+              echo "ERROR: Could not determine release tag" >&2
+              exit 1
+            fi
+            echo "new_tag=$latest_tag" >> $GITHUB_OUTPUT
+          fi
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Check if SPKs already exist in release
+        id: check_assets
+        run: |
+          existing=$(curl -s "https://api.github.com/repos/007revad/Transcode_for_x25/releases/tags/${{ steps.get_latest_tag.outputs.new_tag }}" \
+            | jq -r '.assets[].name' | grep -c '\.spk' || true)
+          echo "spk_count=$existing" >> $GITHUB_OUTPUT
+
+      - name: Stage DSM-version modules
+        if: steps.check_assets.outputs.spk_count == '0'
+        run: |
+          cp package/7.2/*.ko src/lib/modules/
+
+      - name: Synology Package Builder Github Action
+        if: steps.check_assets.outputs.spk_count == '0'
+        uses: tomgrv/synology-package-builder@v1.3.0
+        #uses: 007revad/synology-package-builder@main
+        with:
+          dsm: '7.2'
+          arch: 'kvmx64'
+          output: ./dist
+
+      - name: Remove debug spk and rename package
+        if: steps.check_assets.outputs.spk_count == '0'
+        run: |
+          ls -l ./dist
+          rm ./dist/*_debug.spk
+          for f in ./dist/*.spk; do
+            mv "$f" "./dist/Transcode_geminilakenk-x86_64-${{ steps.get_latest_tag.outputs.new_tag }}-DSM-7.2.spk"
+          done
+          ls -l ./dist
+
+      - name: Upload Package
+        if: steps.check_assets.outputs.spk_count == '0'
+        uses: actions/upload-artifact@v4
+        with:
+          name: Transcode_geminilakenk-DSM-7.2
+          path: ./dist/*.spk
+
+      - name: Release
+        if: steps.check_assets.outputs.spk_count == '0'
+        uses: softprops/action-gh-release@v2
+        with:
+          tag_name: ${{ steps.get_latest_tag.outputs.new_tag }}
+          make_latest: false
+          fail_on_unmatched_files: false
+          files: |
+            ./dist/*.spk
