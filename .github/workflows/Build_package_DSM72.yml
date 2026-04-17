@@ -51,6 +51,11 @@ jobs:
           cp package/7.2/*.ko src/lib/modules/
           ls -la src/lib/modules/
 
+      - name: Show toolkit source tree
+        if: steps.check_assets.outputs.spk_count == '0'
+        run: |
+          find /toolkit/source -type f 2>/dev/null || echo "Toolkit source not populated yet"
+
       - name: Synology Package Builder Github Action
         if: steps.check_assets.outputs.spk_count == '0'
         uses: tomgrv/synology-package-builder@v1.3.0
