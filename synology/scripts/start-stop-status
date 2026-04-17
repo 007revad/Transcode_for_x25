@@ -59,11 +59,11 @@ restore_dsm_modules() {
 
 case "$1" in
     start)
-        load_pkg_modules
+#        load_pkg_modules
         exit 0
         ;;
     stop)
-        restore_dsm_modules
+#        restore_dsm_modules
         exit 0
         ;;
     status)
