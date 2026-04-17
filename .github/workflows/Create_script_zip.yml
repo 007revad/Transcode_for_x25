@@ -17,14 +17,21 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      - name: Create script zip
+      - name: Get version
         run: |
           VERSION=${{ github.event.release.tag_name || github.ref_name }}
+          if [[ "$VERSION" == "main" || "$VERSION" == "master" ]]; then
+            echo "Error: workflow_dispatch must be run from a tag, not a branch"
+            exit 1
+          fi
+          echo "VERSION=$VERSION" >> "$GITHUB_ENV"
+
+      - name: Create script zip
+        run: |
           zip "Transcode_script_${VERSION}.zip" transcode_for_x25.sh
 
       - name: Upload to release
+        run: |
+          gh release upload ${VERSION} Transcode_script_${VERSION}.zip
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        run: |
-          VERSION=${{ github.event.release.tag_name || github.ref_name }}
-          gh release upload ${VERSION} Transcode_script_${VERSION}.zip
