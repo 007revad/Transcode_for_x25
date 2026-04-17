@@ -20,7 +20,7 @@
     "help_url": "https://github.com/007revad/Transcode_for_x25#README.md",
     "os_min_ver": "7.2.2-72806",
     "os_max_ver": "9.9-99999",
-    "arch": "geminilakenk",
+    "arch": "x86_64",
     "displayname": "Transcode Drivers for x25",
     "thirdparty": "yes",
     "beta": "no"
