@@ -49,6 +49,7 @@ jobs:
         if: steps.check_assets.outputs.spk_count == '0'
         run: |
           cp package/7.2/*.ko src/lib/modules/
+          ls -la src/lib/modules/
 
       - name: Synology Package Builder Github Action
         if: steps.check_assets.outputs.spk_count == '0'
