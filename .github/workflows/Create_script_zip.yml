@@ -16,15 +16,23 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
 
       - name: Get version
         run: |
-          VERSION=${{ github.event.release.tag_name || github.ref_name }}
-          if [[ "$VERSION" == "main" || "$VERSION" == "master" ]]; then
-            echo "Error: workflow_dispatch must be run from a tag, not a branch"
+          if [[ "${{ github.event_name }}" == "release" ]]; then
+            VERSION="${{ github.event.release.tag_name }}"
+          else
+            VERSION=$(gh release list --limit 1 --json tagName --jq '.[0].tagName')
+          fi
+          if [[ -z "$VERSION" ]]; then
+            echo "Error: Could not determine version"
             exit 1
           fi
           echo "VERSION=$VERSION" >> "$GITHUB_ENV"
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Create script zip
         run: |
