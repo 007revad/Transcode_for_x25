@@ -77,7 +77,7 @@ jobs:
           ls -l ./dist
           rm ./dist/*_debug.spk
           for f in ./dist/*.spk; do
-            mv "$f" "./dist/Transcode_for_x25-x86_64-${{ steps.get_latest_tag.outputs.new_tag }}-${{ steps.dsm_suffix.outputs.suffix }}.spk"
+            mv "$f" "./dist/Transcode_geminilakenk-x86_64-${{ steps.get_latest_tag.outputs.new_tag }}-${{ steps.dsm_suffix.outputs.suffix }}.spk"
           done
           ls -l ./dist
 
@@ -85,7 +85,7 @@ jobs:
         if: steps.check_assets.outputs.spk_count == '0'
         uses: actions/upload-artifact@v4
         with:
-          name: Transcode_for_x25-${{ steps.dsm_suffix.outputs.suffix }}
+          name: Transcode_geminilakenk-${{ steps.dsm_suffix.outputs.suffix }}
           path: ./dist/*.spk
 
       - name: Release
