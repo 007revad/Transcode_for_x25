@@ -19,12 +19,12 @@ jobs:
 
       - name: Create script zip
         run: |
-          VERSION=${{ github.event.release.tag_name }}
+          VERSION=${{ github.event.release.tag_name || github.ref_name }}
           zip "Transcode_script_${VERSION}.zip" transcode_for_x25.sh
 
       - name: Upload to release
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
-          VERSION=${{ github.event.release.tag_name }}
+          VERSION=${{ github.event.release.tag_name || github.ref_name }}
           gh release upload ${VERSION} Transcode_script_${VERSION}.zip
