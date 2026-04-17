@@ -5,8 +5,6 @@
   "description": "Drivers for Plex or Jellyfin hardware transcoding in DS425+ and DS225+",
   "target": "./src",
   "install_type": "package",
-  "dsmuidir": "ui",
-  "dsmappname": "SYNO.SDS.Transcode-x25",
   "install_dep_packages": "",
   "ctl_stop": "yes",
   "ctl_uninstall": "yes",
