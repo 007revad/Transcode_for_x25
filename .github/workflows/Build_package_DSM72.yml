@@ -42,7 +42,7 @@ jobs:
         id: check_assets
         run: |
           existing=$(curl -s "https://api.github.com/repos/007revad/Transcode_for_x25/releases/tags/${{ steps.get_latest_tag.outputs.new_tag }}" \
-            | jq -r '.assets[].name' | grep -c '\.spk' || true)
+            | jq -r '.assets[].name' | grep -c 'DSM-7.2' || true)
           echo "spk_count=$existing" >> $GITHUB_OUTPUT
 
       - name: Stage DSM-version modules
