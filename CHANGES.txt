@@ -1,3 +1,6 @@
+v3.0.7
+- Now available as a Synology package.
+
 v3.0.6
 - Uses the drivers from RROrg release 26.3.1.
 - Separate drivers available for DSM 7.2 and DSM 7.3.

@@ -1,0 +1,110 @@
+name: Build n Release Transcode for x25 Package
+
+on:
+  release:
+    types: [published]
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+env:
+  FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true
+
+jobs:
+  build-spk:
+    name: Build Package
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        arch: ['kvmx64']
+        #arch: ['noarch']
+        #dsm: ['7.0','7.1','7.2','7.3']
+        dsm: ['7.2','7.3']
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Get release tag
+        id: get_latest_tag
+        run: |
+          if [ "${{ github.event_name }}" = "release" ]; then
+            echo "new_tag=${{ github.event.release.tag_name }}" >> $GITHUB_OUTPUT
+          else
+            # Get most recent release including pre-releases
+            latest_tag=$(curl -s "https://api.github.com/repos/007revad/Transcode_for_x25/releases?per_page=1" \
+              | jq -r '.[0].tag_name // empty')
+            if [ -z "$latest_tag" ]; then
+              echo "ERROR: Could not determine release tag" >&2
+              exit 1
+            fi
+            echo "new_tag=$latest_tag" >> $GITHUB_OUTPUT
+          fi
+
+      - name: Determine DSM suffix
+        id: dsm_suffix
+        run: |
+          echo "suffix=DSM-${{ matrix.dsm }}" >> $GITHUB_OUTPUT
+
+      - name: Check if SPKs already exist in release
+        id: check_assets
+        run: |
+          existing=$(curl -s "https://api.github.com/repos/007revad/Transcode_for_x25/releases/tags/${{ steps.get_latest_tag.outputs.new_tag }}" \
+            | jq -r '.assets[].name' | grep -c '\.spk' || true)
+          echo "spk_count=$existing" >> $GITHUB_OUTPUT
+
+      - name: Stage DSM-version modules
+        if: steps.check_assets.outputs.spk_count == '0'
+        run: |
+          cp package/${{ matrix.dsm }}/*.ko src/lib/modules/
+
+      - name: Synology Package Builder Github Action
+        if: steps.check_assets.outputs.spk_count == '0'
+        #uses: tomgrv/synology-package-builder@v1.3.0
+        uses: 007revad/synology-package-builder@main
+        with:
+          dsm: ${{ matrix.dsm }}
+          arch: ${{ matrix.arch }}
+          output: ./dist
+
+      - name: Remove debug spk and rename package
+        if: steps.check_assets.outputs.spk_count == '0'
+        run: |
+          ls -l ./dist
+          rm ./dist/*_debug.spk
+          for f in ./dist/*.spk; do
+            mv "$f" "./dist/Transcode_drivers-x86_64-${{ steps.get_latest_tag.outputs.new_tag }}-${{ steps.dsm_suffix.outputs.suffix }}.spk"
+          done
+          ls -l ./dist
+
+      - name: Create noarch package
+        if: steps.check_assets.outputs.spk_count == '0'
+        run: |
+          for f in ./dist/Transcode_drivers-x86_64-*.spk; do
+            noarch="${f/x86_64/noarch}"
+            tmpdir=$(mktemp -d)
+            tar -xf "$f" -C "$tmpdir"
+            sed -i 's/arch="x86_64"/arch="noarch"/' "$tmpdir/INFO"
+            tar -cf "$noarch" -C "$tmpdir" $(ls "$tmpdir")
+            rm -rf "$tmpdir"
+          done
+          ls -l ./dist
+
+      - name: Upload Package
+        if: steps.check_assets.outputs.spk_count == '0'
+        uses: actions/upload-artifact@v4
+        with:
+          name: Transcode_drivers-${{ steps.dsm_suffix.outputs.suffix }}
+          path: ./dist/*.spk
+
+      - name: Release
+        if: steps.check_assets.outputs.spk_count == '0'
+        uses: softprops/action-gh-release@v2
+        with:
+          tag_name: ${{ steps.get_latest_tag.outputs.new_tag }}
+          make_latest: false
+          fail_on_unmatched_files: false
+          files: |
+            ./dist/*.spk

@@ -1,0 +1,29 @@
+{
+  "package": "Transcode-x25",
+  "name": "Transcode-x25",
+  "version": "3.0.7",
+  "description": "Drivers for Plex or Jellyfin hardware transcoding in DS425+ and DS225+",
+  "target": "./src",
+  "install_type": "package",
+  "dsmuidir": "ui",
+  "dsmappname": "SYNO.SDS.Transcode-x25",
+  "install_dep_packages": "",
+  "ctl_stop": "yes",
+  "ctl_uninstall": "yes",
+  "support_conf_folder": "yes",
+  "synology": {
+    "maintainer": "007revad",
+    "maintainer_url": "https://github.com/007revad",
+    "distributor": "https://github.com/007revad/Transcode_for_x25",
+    "distributor_url": "https://github.com/007revad/Transcode_for_x25/releases",
+    "support_url": "https://github.com/007revad/Transcode_for_x25/issues",
+    "help_url": "https://github.com/007revad/Transcode_for_x25#README.md",
+    "os_min_ver": "7.2.2-72806",
+    "os_max_ver": "9.9-99999",
+    "arch": "geminilakenk",
+    "displayname": "Transcode Drivers for x25",
+    "thirdparty": "yes",
+    "beta": "no"
+  }
+}
+

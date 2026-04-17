@@ -1,0 +1,30 @@
+name: Create script zip
+
+on:
+  release:
+    types: [published]
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+env:
+  FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true
+
+jobs:
+  create-zip:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Create script zip
+        run: |
+          VERSION=${{ github.event.release.tag_name }}
+          zip "Transcode_script_${VERSION}.zip" transcode_for_x25.sh
+
+      - name: Upload to release
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          VERSION=${{ github.event.release.tag_name }}
+          gh release upload ${VERSION} Transcode_script_x25_${VERSION}.zip
