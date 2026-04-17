@@ -1,4 +1,4 @@
-# Transcode for x25
+# <img src="images/icon.png" width="70"> Transcode for x25
 
 <a href="https://github.com/007revad/Transcode_for_x25/releases"><img src="https://img.shields.io/github/release/007revad/Transcode_for_x25.svg"></a>
 ![Badge](https://hitscounter.dev/api/hit?url=https%3A%2F%2Fgithub.com%2F007revad%2FTranscode_for_x25&label=Visitors&icon=github&color=%23198754&message=&style=flat&tz=Australia%2FSydney)
@@ -10,17 +10,39 @@
 
 Installs the modules needed for Plex or Jellyfin hardware transcoding in DS425+ and DS225+ that Synology removed to save 20 cents per year.
 
-The script automates the steps outlined by Luka Manestar on Blackvoid.club here: [Unlocking plex HW transcoding on X25 Synology models](https://www.blackvoid.club/unlocking-plex-hw-transcoding-on-x25-synology-models/)
+Available as a script or package.
 
 ### Update
 
-Version 2 of the script includes the HDR to SDR tone mapping bug fix.
+Version 3 includes the HDR to SDR tone mapping bug fix.
 
-> ***NOTE:*** <br>
-> If you have previously run version 1 of the script you should run the script (either version) with the `--restore` option to remove the old drivers. 
-> Then run the v2 script to install the latest driver.
+## Package information
+
+### What the package does
+
+When you start the package it: 
+1. Unloads the default i915 drivers.
+2. Loads the good i915 drivers.
+
+When you stop the package it: 
+1. Unloads the good i915 drivers.
+2. Loads the default i915 drivers.
+
+### Download the package
+
+1. Download the latest version .spk file from https://github.com/007revad/Transcode_for_x25/releases and save it to your Synology.
+2. In Package Center click on Manual Install.
+3. Browse to where you downloaded the .spk file.
+4. Select the .spk file and click Next.
+5. The install will fail the first time.
+6. [Set the permissions that the package needs](https://github.com/007revad/Transcode_for_x25/blob/main/set_package_permissions.md). <-- **IMPORTANT**
+7. Do steps 2 to 4 again to install the package.
+
+## Script information
 
 ### What the script does
+
+The script automates the steps outlined by Luka Manestar on Blackvoid.club here: [Unlocking plex HW transcoding on X25 Synology models](https://www.blackvoid.club/unlocking-plex-hw-transcoding-on-x25-synology-models/)
 
 1. Checks it is running as root.
 2. Checks it is running on a Synology model that needs it (synology_geminilakenk).
@@ -71,7 +93,7 @@ sudo -s /volume1/scripts/transcode_for_x25.sh
 
 **Note:** Replace /volume1/scripts/ with the path to where the script is located.
 
-### Troubleshooting
+### Troubleshooting the script
 
 If the script won't run check the following:
 
@@ -86,7 +108,22 @@ If the script won't run check the following:
    sudo chmod +x "/volume1/scripts/transcode_for_x25.sh"
    ```
 
-### Screenshots
+### Package Screenshots
+
+<p align="center">Package installation</p>
+<p align="center"><img src="/images/pkg1.png"></p>
+
+<br>
+
+<p align="center">Package installed</p>
+<p align="center"><img src="/images/pkg2.png"></p>
+
+<br>
+
+<p align="center">Plex HW Transcoding working</p>
+<p align="center"><img src="/images/working.png"></p>
+
+### Script Screenshots
 
 <p align="center">Running script via SSH</p>
 <p align="center"><img src="/images/image1.png"></p>
