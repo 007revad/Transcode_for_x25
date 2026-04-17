@@ -26,6 +26,8 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
 
       - name: Get release tag
         id: get_latest_tag
@@ -33,15 +35,15 @@ jobs:
           if [ "${{ github.event_name }}" = "release" ]; then
             echo "new_tag=${{ github.event.release.tag_name }}" >> $GITHUB_OUTPUT
           else
-            # Get most recent release including pre-releases
-            latest_tag=$(curl -s "https://api.github.com/repos/007revad/Transcode_for_x25/releases?per_page=1" \
-              | jq -r '.[0].tag_name // empty')
+            latest_tag=$(gh release list --limit 1 --json tagName --jq '.[0].tagName')
             if [ -z "$latest_tag" ]; then
               echo "ERROR: Could not determine release tag" >&2
               exit 1
             fi
             echo "new_tag=$latest_tag" >> $GITHUB_OUTPUT
           fi
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Determine DSM suffix
         id: dsm_suffix
@@ -75,20 +77,7 @@ jobs:
           ls -l ./dist
           rm ./dist/*_debug.spk
           for f in ./dist/*.spk; do
-            mv "$f" "./dist/Transcode_drivers-x86_64-${{ steps.get_latest_tag.outputs.new_tag }}-${{ steps.dsm_suffix.outputs.suffix }}.spk"
-          done
-          ls -l ./dist
-
-      - name: Create noarch package
-        if: steps.check_assets.outputs.spk_count == '0'
-        run: |
-          for f in ./dist/Transcode_drivers-x86_64-*.spk; do
-            noarch="${f/x86_64/noarch}"
-            tmpdir=$(mktemp -d)
-            tar -xf "$f" -C "$tmpdir"
-            sed -i 's/arch="x86_64"/arch="noarch"/' "$tmpdir/INFO"
-            tar -cf "$noarch" -C "$tmpdir" $(ls "$tmpdir")
-            rm -rf "$tmpdir"
+            mv "$f" "./dist/Transcode_for_x25-x86_64-${{ steps.get_latest_tag.outputs.new_tag }}-${{ steps.dsm_suffix.outputs.suffix }}.spk"
           done
           ls -l ./dist
 
@@ -96,7 +85,7 @@ jobs:
         if: steps.check_assets.outputs.spk_count == '0'
         uses: actions/upload-artifact@v4
         with:
-          name: Transcode_drivers-${{ steps.dsm_suffix.outputs.suffix }}
+          name: Transcode_for_x25-${{ steps.dsm_suffix.outputs.suffix }}
           path: ./dist/*.spk
 
       - name: Release
