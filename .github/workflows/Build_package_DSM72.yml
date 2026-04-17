@@ -58,8 +58,8 @@ jobs:
 
       - name: Synology Package Builder Github Action
         if: steps.check_assets.outputs.spk_count == '0'
-        uses: tomgrv/synology-package-builder@v1.3.0
-        #uses: 007revad/synology-package-builder@main
+        #uses: tomgrv/synology-package-builder@v1.3.0
+        uses: 007revad/synology-package-builder@main
         with:
           dsm: '7.2'
           arch: 'kvmx64'
