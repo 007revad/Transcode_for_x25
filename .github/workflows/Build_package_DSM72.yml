@@ -102,6 +102,44 @@ jobs:
     needs: [<your-existing-build-job>]   # replace with your actual job name(s)
     if: github.event_name == 'release' && github.event.action == 'published'
     steps:
+      - name: Checkout this repo (for synology/PACKAGE_ICON.PNG and package.json)
+        uses: actions/checkout@v4
+
+      - name: Checkout 007revad.github.io (for thumbnails/)
+        uses: actions/checkout@v4
+        with:
+          repository: 007revad/007revad.github.io
+          token: ${{ secrets.SYNC_TOKEN }}
+          path: _github_io
+
+      - name: Resize icon and push thumbnail
+        run: |
+          set -euo pipefail
+
+          # Read package ID from package.json
+          PKG_NAME=$(jq -r '.package' synology/package.json)
+          DEST="_github_io/spkrepo/thumbnails/${PKG_NAME}_120.png"
+
+          # Resize 256x256 PACKAGE_ICON.PNG → 120x120 PNG
+          mkdir -p "_github_io/spkrepo/thumbnails"
+          convert synology/PACKAGE_ICON.PNG \
+            -resize 120x120 \
+            -gravity center \
+            -extent 120x120 \
+            "${DEST}"
+
+          # Commit and push if the thumbnail changed (or is new)
+          cd _github_io
+          git config user.name  "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add "spkrepo/thumbnails/${PKG_NAME}_120.png"
+          if git diff --cached --quiet; then
+            echo "Thumbnail unchanged — skipping commit."
+          else
+            git commit -m "chore: update spkrepo thumbnail for ${PKG_NAME} [skip ci]"
+            git push
+          fi
+
       - name: Trigger spkrepo index rebuild
         run: |
           curl -fsSL \
