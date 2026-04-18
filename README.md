@@ -111,13 +111,18 @@ If the script won't run check the following:
 
 ### Package Screenshots
 
-<p align="center">Package installation</p>
+<p align="center">Permissions instructions</p>
 <p align="center"><img src="/images/pkg1.png"></p>
 
 <br>
 
-<p align="center">Package installed</p>
+<p align="center">Installing package</p>
 <p align="center"><img src="/images/pkg2.png"></p>
+
+<br>
+
+<p align="center">Package installed</p>
+<p align="center"><img src="/images/pkg3.png"></p>
 
 <br>
 
