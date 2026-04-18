@@ -96,3 +96,24 @@ jobs:
           fail_on_unmatched_files: false
           files: |
             ./dist/*.spk
+
+  notify-spkrepo:
+    runs-on: ubuntu-latest
+    needs: [<your-existing-build-job>]   # replace with your actual job name(s)
+    if: github.event_name == 'release' && github.event.action == 'published'
+    steps:
+      - name: Trigger spkrepo index rebuild
+        run: |
+          curl -fsSL \
+            -X POST \
+            -H "Authorization: Bearer ${{ secrets.SYNC_TOKEN }}" \
+            -H "Accept: application/vnd.github+json" \
+            -H "Content-Type: application/json" \
+            https://api.github.com/repos/007revad/007revad.github.io/dispatches \
+            --data '{
+              "event_type": "spk-release",
+              "client_payload": {
+                "repo":    "${{ github.repository }}",
+                "tag":     "${{ github.event.release.tag_name }}"
+              }
+            }'
