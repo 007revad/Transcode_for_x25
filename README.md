@@ -29,15 +29,16 @@ When you stop the package it:
 1. Unloads the good i915 drivers.
 2. Loads the default i915 drivers.
 
-### Download the package
+### Download and install the package
 
 1. Download the latest version .spk file from https://github.com/007revad/Transcode_for_x25/releases and save it to your Synology.
 2. In Package Center click on Manual Install.
 3. Browse to where you downloaded the .spk file.
 4. Select the .spk file and click Next.
-5. The install will fail to start the package the first time.
+5. If you haven't installed the Transcode Drivers for x25 package before Package Center will warn that the package failed to install.
+    - It actuallly did install but will show Error in Package Center.
 6. [Set the permissions that the package needs](https://github.com/007revad/Transcode_for_x25/blob/main/set_package_permissions.md). <-- **IMPORTANT**
-7. Do steps 2 to 4 again to install the package.
+7. You can now click Run to start the Transcode Drivers for x25 package.
 
 ## Script information
 
