@@ -11,6 +11,10 @@ sudo /opt/sbin/spk_su Transcode-drivers
 sudo rm /var/packages/Transcode-drivers/installing
 ```
 
+You can now click Run to start the Transcode Drivers for x25 package in Package Center.
+  - If the button still shows Uninstall instead of Run click the Refresh button. 
+  <br><img src="images/refresh.png">
+
 ### Set package permissions in Synology Task Scheduler
 
 1. Go to **Control Panel** > **Task Scheduler** > click **Create** > and select **Scheduled Task**.
@@ -30,6 +34,10 @@ sudo rm /var/packages/Transcode-drivers/installing
 8. Click **OK** to save the settings.
 9. Click on the task - but **don't** enable it - then click **Run**.
 10. Once the scheduled task has run you can delete the task, or keep in case you need it again.
+
+You can now click Run to start the Transcode Drivers for x25 package in Package Center.
+  - If the button still shows Uninstall instead of Run click the Refresh button. 
+  <br><img src="images/refresh.png">
 
 **Here's some screenshots showing what needs to be set:**
 
