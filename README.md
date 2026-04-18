@@ -11,7 +11,7 @@
 
 Installs the modules needed for Plex or Jellyfin hardware transcoding in DS425+ and DS225+ that Synology removed to save 20 cents per year.
 
-Available as a script or package.
+Version 3 is available as a script or package.
 
 ### Update
 
