@@ -6,7 +6,7 @@
 # https://www.blackvoid.club/content/files/2026/02/x25_hw_transcode_module_v2.zip
 #----------------------------------------------------------------------------------
 
-scriptver="v3.0.6"
+scriptver="v3.0.9"
 script=Transcode_for_x25
 repo="007revad/Transcode_for_x25"
 scriptname=transcode_for_x25
@@ -421,13 +421,15 @@ fi
 # modinfo /path/to/your/module.ko
 
 
-url="https://github.com/$repo/releases/download/$scriptver/${dsm_ver}_drivers_${scriptver}.zip"
-zipfile="$scriptpath/${dsm_ver}_drivers_${scriptver}/${dsm_ver}_drivers_${scriptver}.zip"
-zip="${dsm_ver}_drivers_${scriptver}.zip"
-x25_drivers_dir="$scriptpath/${dsm_ver}_drivers_${scriptver}"
+url="https://www.blackvoid.club/content/files/2026/04/x25_hw_transcode_module_v3_${dsm_ver}.zip"
+zipfile="$scriptpath/x25_drivers_v3_${dsm_ver}/x25_hw_transcode_module_v3_${dsm_ver}.zip"
+zip="x25_hw_transcode_module_v3_${dsm_ver}.zip"
+x25_drivers_dir="$scriptpath/x25_drivers_v3_${dsm_ver}"
 
 # Check drivers are available for user's DSM version
-if ! curl --silent --head --fail -m 10 --connect-timeout 5 "$url" >/dev/null; then
+http_code=$(curl --silent --head --write-out "%{http_code}" \
+    --output /dev/null -m 10 --connect-timeout 5 "$url")
+if [[ "$http_code" != "200" ]]; then
     ding
     echo -e "${Error}ERROR${Off} No drivers available for DSM $productversion"
     echo "      $url"
