@@ -36,10 +36,10 @@ jobs:
 
       - name: Create script zip
         run: |
-          zip "Transcode_script_${VERSION}.zip" transcode_for_x25.sh
+          zip "Transcode_${VERSION}_script.zip" transcode_for_x25.sh
 
       - name: Upload to release
         run: |
-          gh release upload ${VERSION} Transcode_script_${VERSION}.zip
+          gh release upload ${VERSION} Transcode_${VERSION}_script.zip
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}

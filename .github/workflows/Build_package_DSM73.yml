@@ -79,7 +79,7 @@ jobs:
         if: steps.check_assets.outputs.spk_count == '0'
         uses: actions/upload-artifact@v4
         with:
-          name: Transcode_geminilakenk-DSM-7.3
+          name: Transcode_DSM-7.3-geminilakenk
           path: ./dist/*.spk
 
       - name: Release
