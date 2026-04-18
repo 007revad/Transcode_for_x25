@@ -5,10 +5,10 @@ There are 2 ways you can set the required permissions for the package.
 ### Set package permissions via SSH
 
 ```
-sudo install -m 4755 -o root -D /var/packages/Transcode-x25/target/bin/spk_su /opt/sbin/spk_su
+sudo install -m 4755 -o root -D /var/packages/Transcode-drivers/target/bin/spk_su /opt/sbin/spk_su
 sudo chmod a+rx /opt /opt/sbin
-sudo /opt/sbin/spk_su Transcode-x25
-sudo rm /var/packages/Transcode-x25/installing
+sudo /opt/sbin/spk_su Transcode-drivers
+sudo rm /var/packages/Transcode-drivers/installing
 ```
 
 ### Set package permissions in Synology Task Scheduler
@@ -21,11 +21,11 @@ sudo rm /var/packages/Transcode-x25/installing
 6. Click **Task Settings**.
 7. In the box under **User-defined script** copy and paste the following. 
     ```
-    file=/var/packages/Transcode-x25/target/bin/spk_su
+    file=/var/packages/Transcode-drivers/target/bin/spk_su
     install -m 4755 -o root -D "$file" /opt/sbin/spk_su
     chmod a+rx /opt /opt/sbin
-    /opt/sbin/spk_su Transcode-x25
-    rm /var/packages/Transcode-x25/installing
+    /opt/sbin/spk_su Transcode-drivers
+    rm /var/packages/Transcode-drivers/installing
     ```
 8. Click **OK** to save the settings.
 9. Click on the task - but **don't** enable it - then click **Run**.
