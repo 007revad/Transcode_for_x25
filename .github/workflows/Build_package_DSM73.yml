@@ -71,7 +71,7 @@ jobs:
           ls -l ./dist
           rm ./dist/*_debug.spk
           for f in ./dist/*.spk; do
-            mv "$f" "./dist/Transcode_geminilakenk-${{ steps.get_latest_tag.outputs.new_tag }}-DSM-7.3.spk"
+            mv "$f" "./dist/Transcode_${{ steps.get_latest_tag.outputs.new_tag }}-DSM-7.3-geminilakenk.spk"
           done
           ls -l ./dist
 
