@@ -51,6 +51,11 @@ jobs:
           cp package/7.2/*.ko src/lib/modules/
           ls -la src/lib/modules/
 
+      - name: Set os_max_ver for DSM 7.2
+        if: steps.check_assets.outputs.spk_count == '0'
+        run: |
+          sed -i 's/"os_max_ver": "9.9-99999"/"os_max_ver": "7.2-99999"/' package.json
+
       - name: Show toolkit source tree
         if: steps.check_assets.outputs.spk_count == '0'
         run: |

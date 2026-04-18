@@ -4,9 +4,11 @@ privilege_file=`dirname $0`/../conf/privilege
 
 if [ -w "${privilege_file}" ]; then
     # DSM 7 beta
+    # privilege_file is writable by package
     sed -i 's/package/root/g' "${privilege_file}"
 elif [ -e "${privilege_file}" ]; then
     # DSM 7 release
+    # privilege_file exists but is not writable by package
     if [ -x "${spk_su}" ]; then
         "${spk_su}" "${SYNOPKG_PKGNAME}"
     else
