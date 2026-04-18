@@ -51,6 +51,11 @@ jobs:
           cp package/7.3/*.ko src/lib/modules/
           ls -la src/lib/modules/
 
+      - name: Set os_min_ver for DSM 7.3
+        if: steps.check_assets.outputs.spk_count == '0'
+        run: |
+          sed -i 's/"os_min_ver": "7.2-72806"/"os_min_ver": "7.3-81180"/' package.json
+
       - name: Show toolkit source tree
         if: steps.check_assets.outputs.spk_count == '0'
         run: |
