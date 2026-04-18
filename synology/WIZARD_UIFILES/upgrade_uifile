@@ -1,6 +1,6 @@
 [{
     "step_title": "Permission setup required",
     "items": [{
-        "desc": "The installation will fail the first time. After that you must grant the package the required permissions, if you haven't already.<br><br>See the <a target=\"_blank\" href=\"https://github.com/007revad/Transcode_for_x25/blob/main/set_package_permissions.md\">Set package permissions</a> for details.<br><br>Then install the package."
+        "desc": "Package Center will say the package failed to start when first installed. After installation you must grant the package the required permissions, if you haven't already.<br><br>See the <a target=\"_blank\" href=\"https://github.com/007revad/Transcode_for_x25/blob/main/set_package_permissions.md\">Set package permissions</a> for details.<br><br>Then refresh Package Center and start the package."
     }]
 }]

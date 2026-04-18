@@ -1,7 +1,7 @@
 {
-  "package": "Transcode-x25",
+  "package": "Transcode-drivers",
   "name": "Transcode-x25",
-  "version": "3.0.7",
+  "version": "3.0.9",
   "description": "Drivers for Plex or Jellyfin hardware transcoding in DS425+ and DS225+",
   "target": "./src",
   "install_type": "package",

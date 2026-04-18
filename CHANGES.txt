@@ -1,4 +1,4 @@
-v3.0.7
+v3.0.9
 - Now available as a Synology package.
 
 v3.0.6
