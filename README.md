@@ -51,8 +51,8 @@ The script automates the steps outlined by Luka Manestar on Blackvoid.club here:
 4. Creates a **x25_drivers** folder in the same folder as the script (if the folder does not already exist).
 5. Downloads **x25_transcode_modules.zip** from blackvoid and saves it in the **x25_drivers folder** (if the zip file does not already exist).
 6. Unzips the downloaded zip file (if the script downloaded the zip file).
-7. Removes the default driver modules.
-8. Install the working driver modules.
+7. Unloads the default driver modules.
+8. Loads the working driver modules.
 
 On subsequent runs steps 4, 5 and 6 would be skipped (because the **x25_drivers** folder and **x25_transcode_modules.zip** file already exist).
 
