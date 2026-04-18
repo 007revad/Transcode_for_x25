@@ -11,7 +11,7 @@
 
 Installs the modules needed for Plex or Jellyfin hardware transcoding in DS425+ and DS225+ that Synology removed to save 20 cents per year.
 
-Available as a script or package.
+Version 3 is available as a script or package.
 
 ### Update
 
@@ -29,15 +29,16 @@ When you stop the package it:
 1. Unloads the good i915 drivers.
 2. Loads the default i915 drivers.
 
-### Download the package
+### Download and install the package
 
 1. Download the latest version .spk file from https://github.com/007revad/Transcode_for_x25/releases and save it to your Synology.
 2. In Package Center click on Manual Install.
 3. Browse to where you downloaded the .spk file.
 4. Select the .spk file and click Next.
-5. The install will fail the first time.
+5. If you haven't installed the Transcode Drivers for x25 package before Package Center will warn that the package failed to install.
+    - It actuallly did install but will show Error in Package Center.
 6. [Set the permissions that the package needs](https://github.com/007revad/Transcode_for_x25/blob/main/set_package_permissions.md). <-- **IMPORTANT**
-7. Do steps 2 to 4 again to install the package.
+7. You can now click Run to start the Transcode Drivers for x25 package.
 
 ## Script information
 
@@ -51,8 +52,8 @@ The script automates the steps outlined by Luka Manestar on Blackvoid.club here:
 4. Creates a **x25_drivers** folder in the same folder as the script (if the folder does not already exist).
 5. Downloads **x25_transcode_modules.zip** from blackvoid and saves it in the **x25_drivers folder** (if the zip file does not already exist).
 6. Unzips the downloaded zip file (if the script downloaded the zip file).
-7. Removes the default driver modules.
-8. Install the working driver modules.
+7. Unloads the default driver modules.
+8. Loads the working driver modules.
 
 On subsequent runs steps 4, 5 and 6 would be skipped (because the **x25_drivers** folder and **x25_transcode_modules.zip** file already exist).
 
@@ -111,13 +112,18 @@ If the script won't run check the following:
 
 ### Package Screenshots
 
-<p align="center">Package installation</p>
+<p align="center">Permissions instructions</p>
 <p align="center"><img src="/images/pkg1.png"></p>
 
 <br>
 
-<p align="center">Package installed</p>
+<p align="center">Installing package</p>
 <p align="center"><img src="/images/pkg2.png"></p>
+
+<br>
+
+<p align="center">Package installed</p>
+<p align="center"><img src="/images/pkg3.png"></p>
 
 <br>
 
