@@ -35,7 +35,7 @@ When you stop the package it:
 2. In Package Center click on Manual Install.
 3. Browse to where you downloaded the .spk file.
 4. Select the .spk file and click Next.
-5. The install will fail the first time.
+5. The install will fail to start the package the first time.
 6. [Set the permissions that the package needs](https://github.com/007revad/Transcode_for_x25/blob/main/set_package_permissions.md). <-- **IMPORTANT**
 7. Do steps 2 to 4 again to install the package.
 
