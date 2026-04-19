@@ -1,3 +1,7 @@
+v3.0.10
+- Minor changes for making the package available in Package Center from my spk repository.
+- Script version number updated to keep in sycn with package.
+
 v3.0.9
 - Now available as a Synology package.
 
