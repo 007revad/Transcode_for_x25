@@ -1,3 +1,6 @@
+v3.0.11
+- Bug fix for GitHub repo URL showing as Publisher in Package Center.
+
 v3.0.10
 - Minor changes for making the package available in Package Center from my spk repository.
 - Script version number updated to keep in sycn with package.
