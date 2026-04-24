@@ -29,7 +29,16 @@ When you stop the package it:
 1. Unloads the good i915 drivers.
 2. Loads the default i915 drivers.
 
-### Download and install the package
+### How to install the package
+
+There are 2 ways to install the package:
+
+**Directly from Package Center**
+
+1. Add [007revad Synology Package Source](https://github.com/007revad/Synology_package_source/blob/main/README.md) to package Center.
+2. Click on the Community section in Package Center and install the package.
+
+**Or download the package and install it manually**
 
 1. Download the latest version .spk file from https://github.com/007revad/Transcode_for_x25/releases and save it to your Synology.
 2. In Package Center click on Manual Install.
