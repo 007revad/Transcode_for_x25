@@ -1,0 +1,171 @@
+name: DSM 7.4 Build n Release Transcode for x25 Package
+
+on:
+  release:
+    types: [published]
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+env:
+  FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true
+
+jobs:
+  build-spk:
+    name: Build Package DSM 7.4
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Get release tag
+        id: get_latest_tag
+        run: |
+          if [ "${{ github.event_name }}" = "release" ]; then
+            echo "new_tag=${{ github.event.release.tag_name }}" >> $GITHUB_OUTPUT
+          else
+            latest_tag=$(gh release list --limit 1 --json tagName --jq '.[0].tagName')
+            if [ -z "$latest_tag" ]; then
+              echo "ERROR: Could not determine release tag" >&2
+              exit 1
+            fi
+            echo "new_tag=$latest_tag" >> $GITHUB_OUTPUT
+          fi
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Check if SPKs already exist in release
+        id: check_assets
+        run: |
+          existing=$(curl -s "https://api.github.com/repos/007revad/Transcode_for_x25/releases/tags/${{ steps.get_latest_tag.outputs.new_tag }}" \
+            | jq -r '.assets[].name' | grep -c 'DSM-7.4' || true)
+          echo "spk_count=$existing" >> $GITHUB_OUTPUT
+
+      - name: Stage DSM-version modules
+        if: steps.check_assets.outputs.spk_count == '0'
+        run: |
+          cp package/7.4/*.ko src/lib/modules/
+          ls -la src/lib/modules/
+
+      - name: Set os_min_ver for DSM 7.4
+        if: steps.check_assets.outputs.spk_count == '0'
+        run: |
+          sed -i 's/"os_min_ver": "7.2-72806"/"os_min_ver": "7.4-90075"/' package.json
+          sed -i 's/"os_max_ver": "9.9-99999"/"os_max_ver": "7.4-99999"/' package.json
+
+      - name: Show toolkit source tree
+        if: steps.check_assets.outputs.spk_count == '0'
+        run: |
+          find /toolkit/source -type f 2>/dev/null || echo "Toolkit source not populated yet"
+
+      - name: Synology Package Builder Github Action
+        if: steps.check_assets.outputs.spk_count == '0'
+        #uses: tomgrv/synology-package-builder@v1.3.0
+        uses: 007revad/synology-package-builder@main
+        with:
+          dsm: '7.4'
+          arch: 'kvmx64'
+          output: ./dist
+
+      - name: Remove debug spk and rename package
+        if: steps.check_assets.outputs.spk_count == '0'
+        run: |
+          ls -l ./dist
+          rm ./dist/*_debug.spk
+          for f in ./dist/*.spk; do
+            mv "$f" "./dist/Transcode_${{ steps.get_latest_tag.outputs.new_tag }}-DSM-7.4-geminilakenk.spk"
+          done
+          ls -l ./dist
+
+      - name: Upload Package
+        if: steps.check_assets.outputs.spk_count == '0'
+        uses: actions/upload-artifact@v4
+        with:
+          name: Transcode_DSM-7.4-geminilakenk
+          path: ./dist/*.spk
+
+      - name: Release
+        if: steps.check_assets.outputs.spk_count == '0'
+        uses: softprops/action-gh-release@v2
+        with:
+          tag_name: ${{ steps.get_latest_tag.outputs.new_tag }}
+          make_latest: false
+          fail_on_unmatched_files: false
+          files: |
+            ./dist/*.spk
+
+  notify-spkrepo:
+    runs-on: ubuntu-latest
+    needs: [build-spk]
+    if: github.event_name == 'release' && github.event.action == 'published'
+    steps:
+      - name: Checkout this repo (for synology/PACKAGE_ICON.PNG and package.json)
+        uses: actions/checkout@v4
+
+      - name: Checkout 007revad.github.io (for thumbnails/)
+        uses: actions/checkout@v4
+        with:
+          repository: 007revad/007revad.github.io
+          token: ${{ secrets.SYNC_TOKEN }}
+          path: _github_io
+
+      - name: Install ImageMagick
+        run: sudo apt-get install -y --no-install-recommends imagemagick
+
+      - name: Resize icon and push thumbnail
+        run: |
+          set -euo pipefail
+
+          # Read package ID from package.json
+          # package.json may be at the repo root or under synology/ depending on the repo
+          if [ -f "synology/package.json" ]; then
+            PKG_JSON="synology/package.json"
+          elif [ -f "package.json" ]; then
+            PKG_JSON="package.json"
+          else
+            echo "ERROR: package.json not found" >&2
+            exit 1
+          fi
+
+          PKG_NAME=$(jq -r '.package' "${PKG_JSON}")
+          DEST="_github_io/spkrepo/thumbnails/${PKG_NAME}_120.png"
+
+          # Resize 256x256 PACKAGE_ICON.PNG → 120x120 PNG
+          mkdir -p "_github_io/spkrepo/thumbnails"
+          /usr/bin/convert synology/PACKAGE_ICON.PNG \
+            -resize 120x120 \
+            -gravity center \
+            -extent 120x120 \
+            "${DEST}"
+
+          # Commit and push if the thumbnail changed (or is new)
+          cd _github_io
+          git config user.name  "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add "spkrepo/thumbnails/${PKG_NAME}_120.png"
+          if git diff --cached --quiet; then
+            echo "Thumbnail unchanged — skipping commit."
+          else
+            git commit -m "chore: update spkrepo thumbnail for ${PKG_NAME} [skip ci]"
+            git push
+          fi
+
+      - name: Trigger spkrepo index rebuild
+        run: |
+          curl -fsSL \
+            -X POST \
+            -H "Authorization: Bearer ${{ secrets.SYNC_TOKEN }}" \
+            -H "Accept: application/vnd.github+json" \
+            -H "Content-Type: application/json" \
+            https://api.github.com/repos/007revad/007revad.github.io/dispatches \
+            --data '{
+              "event_type": "spk-release",
+              "client_payload": {
+                "repo":    "${{ github.repository }}",
+                "tag":     "${{ github.event.release.tag_name }}"
+              }
+            }'

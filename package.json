@@ -1,12 +1,12 @@
 {
   "package": "TranscodeDrivers",
   "name": "TranscodeDrivers",
-  "version": "3.0.11",
+  "version": "4.0.12",
   "description": "Drivers for Plex and Jellyfin hardware transcoding in DS425+ and DS225+",
   "target": "./src",
   "install_type": "package",
   "install_dep_packages": "",
-  "ctl_stop": "yes",
+  "ctl_stop": "no",
   "ctl_uninstall": "yes",
   "support_conf_folder": "yes",
   "synology": {

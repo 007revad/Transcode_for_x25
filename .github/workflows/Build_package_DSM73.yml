@@ -55,6 +55,7 @@ jobs:
         if: steps.check_assets.outputs.spk_count == '0'
         run: |
           sed -i 's/"os_min_ver": "7.2-72806"/"os_min_ver": "7.3-81180"/' package.json
+          sed -i 's/"os_max_ver": "9.9-99999"/"os_max_ver": "7.3-99999"/' package.json
 
       - name: Show toolkit source tree
         if: steps.check_assets.outputs.spk_count == '0'

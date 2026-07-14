@@ -1,3 +1,6 @@
+v4.0.12
+- Added drivers for DSM 7.4.
+
 v3.0.11
 - Bug fix for GitHub repo URL showing as Publisher in Package Center.
 
