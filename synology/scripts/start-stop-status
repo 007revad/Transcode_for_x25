@@ -1,6 +1,6 @@
 #!/bin/sh
 
-set -eu
+#set -eu
 
 PKG_MODULES="${SYNOPKG_PKGDEST}/lib/modules"
 DSM_MODULES="/usr/lib/modules"
@@ -68,7 +68,7 @@ case "$1" in
         ;;
     status)
         /sbin/lsmod | grep -q "^i915 " || exit 3
-        /sbin/lsmod | grep -q "^drm_buddy " || exit 3
+        #/sbin/lsmod | grep -q "^drm_buddy " || exit 3
         exit 0
         ;;
     killall)

@@ -420,8 +420,8 @@ fi
 # Get version of ko module
 # modinfo /path/to/your/module.ko
 
-if [[ $dsm_ver == "74" ]]; then
-    url="https://www.blackvoid.club/content/files/2026/04/x25_hw_transcode_module_v4_${dsm_ver}.zip"
+if [[ $dsm_ver == "dsm74" ]]; then
+    url="https://www.blackvoid.club/content/files/2026/07/x25_hw_transcode_module_v4_${dsm_ver}.zip"
 else
     url="https://www.blackvoid.club/content/files/2026/04/x25_hw_transcode_module_v3_${dsm_ver}.zip"
 fi
