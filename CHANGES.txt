@@ -1,5 +1,5 @@
 v4.0.13
-- Bug fix for script's driver download URL.
+- Bug fix for script's DSM 7.4 driver download URL.
 - Bug fix package failing to install or start.
 
 v4.0.12
