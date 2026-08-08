@@ -1,3 +1,6 @@
+v4.0.14
+- Bug fixes for the standalone script. Thanks @galaxy-eye
+
 v4.0.13
 - Bug fix for script's DSM 7.4 driver download URL.
 - Bug fix for package failing to install or start.
