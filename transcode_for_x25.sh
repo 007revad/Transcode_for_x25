@@ -6,7 +6,7 @@
 # https://www.blackvoid.club/content/files/2026/02/x25_hw_transcode_module_v2.zip
 #----------------------------------------------------------------------------------
 
-scriptver="v3.0.10"
+scriptver="v4.0.13"
 script=Transcode_for_x25
 repo="007revad/Transcode_for_x25"
 scriptname=transcode_for_x25
@@ -422,12 +422,15 @@ fi
 
 if [[ $dsm_ver == "dsm74" ]]; then
     url="https://www.blackvoid.club/content/files/2026/07/x25_hw_transcode_module_v4_${dsm_ver}.zip"
+    x25_drivers_dir="$scriptpath/x25_drivers_v4_${dsm_ver}"
+    zipfile="$scriptpath/x25_drivers_v4_${dsm_ver}/x25_hw_transcode_module_v4_${dsm_ver}.zip"
+    zip="x25_hw_transcode_module_v4_${dsm_ver}.zip"
 else
     url="https://www.blackvoid.club/content/files/2026/04/x25_hw_transcode_module_v3_${dsm_ver}.zip"
+    x25_drivers_dir="$scriptpath/x25_drivers_v3_${dsm_ver}"
+    zipfile="$scriptpath/x25_drivers_v3_${dsm_ver}/x25_hw_transcode_module_v3_${dsm_ver}.zip"
+    zip="x25_hw_transcode_module_v3_${dsm_ver}.zip"
 fi
-zipfile="$scriptpath/x25_drivers_v3_${dsm_ver}/x25_hw_transcode_module_v3_${dsm_ver}.zip"
-zip="x25_hw_transcode_module_v3_${dsm_ver}.zip"
-x25_drivers_dir="$scriptpath/x25_drivers_v3_${dsm_ver}"
 
 # Check drivers are available for user's DSM version
 http_code=$(curl --silent --head --write-out "%{http_code}" \
