@@ -1,7 +1,6 @@
 name: DSM 7.4 Build n Release Transcode for x25 Package
 
 on:
-  release:
   workflow_dispatch:
   workflow_call:
 
