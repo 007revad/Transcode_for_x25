@@ -1,3 +1,6 @@
+v4.0.15
+- Bug fix for the v4.0.14 standalone script containing v4.0.13.
+
 v4.0.14
 - Bug fixes for the standalone script. Thanks @galaxy-eye
 
