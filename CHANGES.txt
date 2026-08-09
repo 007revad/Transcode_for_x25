@@ -1,5 +1,7 @@
 v4.1.17
+- The package no longer needs users to set permissions manually.
 - Added logging in the package to help diagnose any issues loading the drivers (in case it's ever needed).
+  - To view the log via SSH: `/var/packages/TranscodeDrivers/var/TranscodeDrivers.log`
 
 v4.1.16
 - The package no longer needs users to set permissions manually.
