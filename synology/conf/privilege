@@ -1,0 +1,11 @@
+{
+  "defaults": { "run-as": "package" },
+  "tool": [
+    {
+      "relpath": "bin/helper/transcode-helper",
+      "user": "root",
+      "group": "package",
+      "permission": "6550"
+    }
+  ]
+}
