@@ -25,9 +25,11 @@ insmod_if_exists() {
     if [ -f "$1" ]; then
         if /sbin/insmod "$1" 2>>"${LOG_FILE}"; then
             log "Loaded $(basename "$1")"
+            INSMOD_OK=$((INSMOD_OK + 1))
         else
             log "ERROR: Failed to load $(basename "$1")"
         fi
+        INSMOD_TOTAL=$((INSMOD_TOTAL + 1))
     else
         log "Skipped $(basename "$1") (not found)"
     fi
@@ -38,9 +40,11 @@ rmmod_if_loaded() {
     if /sbin/lsmod | grep -q "^${1} "; then
         if /sbin/rmmod "$1" 2>>"${LOG_FILE}"; then
             log "Unloaded ${1}"
+            RMMOD_OK=$((RMMOD_OK + 1))
         else
             log "ERROR: Failed to unload ${1}"
         fi
+        RMMOD_TOTAL=$((RMMOD_TOTAL + 1))
     else
         log "Skipped ${1} (not loaded)"
     fi
@@ -48,7 +52,11 @@ rmmod_if_loaded() {
 }
 
 load_pkg_modules() {
-    log "Loading driver modules"
+    log "Loading package driver modules"
+    INSMOD_TOTAL=0
+    INSMOD_OK=0
+    RMMOD_TOTAL=0
+    RMMOD_OK=0
 
     # Remove DSM's default modules (reverse load order)
     rmmod_if_loaded i915
@@ -56,6 +64,7 @@ load_pkg_modules() {
     rmmod_if_loaded drm
     rmmod_if_loaded drm_panel_orientation_quirks
     rmmod_if_loaded i2c-algo-bit
+    log "Unloaded ${RMMOD_OK}/${RMMOD_TOTAL} default modules successfully"
 
     # Load package modules
     insmod_if_exists "${PKG_MODULES}/i2c-algo-bit.ko"
@@ -69,10 +78,15 @@ load_pkg_modules() {
     insmod_if_exists "${PKG_MODULES}/intel-gtt.ko"
     insmod_if_exists "${PKG_MODULES}/i915-compat.ko"
     insmod_if_exists "${PKG_MODULES}/i915.ko"
+    log "Loaded ${INSMOD_OK}/${INSMOD_TOTAL} package modules successfully"
 }
 
 restore_dsm_modules() {
     log "Restoring default driver modules"
+    INSMOD_TOTAL=0
+    INSMOD_OK=0
+    RMMOD_TOTAL=0
+    RMMOD_OK=0
 
     # Remove package modules (reverse load order)
     rmmod_if_loaded i915
@@ -86,6 +100,7 @@ restore_dsm_modules() {
     rmmod_if_loaded dmabuf
     rmmod_if_loaded drm_panel_orientation_quirks
     rmmod_if_loaded i2c-algo-bit
+    log "Unloaded ${RMMOD_OK}/${RMMOD_TOTAL} package modules successfully"
 
     # Restore DSM's default modules
     insmod_if_exists "${DSM_MODULES}/i2c-algo-bit.ko"
@@ -93,6 +108,7 @@ restore_dsm_modules() {
     insmod_if_exists "${DSM_MODULES}/drm.ko"
     insmod_if_exists "${DSM_MODULES}/drm_kms_helper.ko"
     insmod_if_exists "${DSM_MODULES}/i915.ko"
+    log "Restored ${INSMOD_OK}/${INSMOD_TOTAL} default modules successfully"
 }
 
 case "$1" in
@@ -100,12 +116,14 @@ case "$1" in
         echo " " >> "${LOG_FILE}"
         log "${PKG_NAME} starting"
         load_pkg_modules
+        log "${PKG_NAME} started"
         exit 0
         ;;
     stop)
         echo " " >> "${LOG_FILE}"
         log "${PKG_NAME} stopping"
         restore_dsm_modules
+        log "${PKG_NAME} stopped"
         exit 0
         ;;
 esac
