@@ -1,5 +1,8 @@
+v4.1.17
+- Added logging in the package to help diagnose any issues loading the drivers (in case it's ever needed).
+
 v4.1.16
-- The package does not need permissions set manually for this version or later.
+- The package no longer needs users to set permissions manually.
 
 v4.0.15
 - Bug fix for the v4.0.14 standalone script containing v4.0.13.
