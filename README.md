@@ -15,7 +15,7 @@ Version 3 and later is available as a package or a script.
 
 ### Update
 
-Version 4 also supports DSM 7.4.
+Version 4 also supports DSM 7.4. <br>
 Version 3 includes the HDR to SDR tone mapping bug fix.
 
 ## Package information
