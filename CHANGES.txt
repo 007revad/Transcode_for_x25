@@ -1,3 +1,7 @@
+v4.1.18
+- The package no longer needs users to set permissions manually.
+- Added Open button that shows the log.
+
 v4.1.17
 - The package no longer needs users to set permissions manually.
 - Added logging in the package to help diagnose any issues loading the drivers (in case it's ever needed).

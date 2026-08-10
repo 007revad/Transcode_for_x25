@@ -1,7 +1,7 @@
 {
   "package": "TranscodeDrivers",
   "name": "TranscodeDrivers",
-  "version": "4.1.17",
+  "version": "4.1.18",
   "description": "Drivers for Plex and Jellyfin hardware transcoding in DS425+ and DS225+",
   "target": "./src",
   "install_type": "package",
@@ -20,6 +20,8 @@
     "os_max_ver": "9.9-99999",
     "arch": "geminilakenk",
     "displayname": "Transcode Drivers for x25",
+    "dsmuidir": "ui",
+    "dsmappname": "SYNO.SDS._ThirdParty.App.TranscodeDrivers",
     "thirdparty": "yes",
     "beta": "no"
   }

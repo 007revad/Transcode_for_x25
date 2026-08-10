@@ -1,6 +1,39 @@
-#!/bin/sh
+#!/bin/bash
+
+PKG_NAME=$(basename "$SYNOPKG_PKGDEST")
+TARGET_DIR="/var/packages/$PKG_NAME/target"
+UI_DIR="$TARGET_DIR/ui"
+BIN_DIR="$TARGET_DIR/bin"
+VAR_DIR="/var/packages/$PKG_NAME/var"
+
+if [[ ! -f "$VAR_DIR/TranscodeDrivers.log" ]]; then
+    touch "$VAR_DIR/TranscodeDrivers.log"
+fi
+chown "$VAR_DIR/TranscodeDrivers.log"
+
+# Log function
+log_message() {
+    echo "[$(date '+%Y-%m-%d %H:%M:%S')] $1" >> "$VAR_DIR/install.log" 2>/dev/null || echo "$1"
+}
+
+log_message "Post-installation starting for package: $PKG_NAME"
+
+# Remove spurious files injected by the package builder
+rm -f "$UI_DIR/Makefile"
+rm -f "$UI_DIR/ui"  # self-referencing symlink
+rm -f "$UI_DIR/texts/strings"  # strings file template
+log_message "Removed spurious package builder files"
 
 # Set execute permissions
-chmod +x /var/packages/TranscodeDrivers/target/bin/manage_drivers.sh 2>/dev/null
+chmod +x "$BIN_DIRUI_DIR/api.cgi" 2>/dev/null
+log_message "Set execute permissions for api.cgi"
+chmod +x "$BIN_DIR/manage_drivers.sh" 2>/dev/null
+log_message "Set execute permissions manage_drivers.sh"
 
+if [ -z "$ERRORS" ]; then
+    log_message "Post-installation completed successfully"
+else
+    log_message "Post-installation completed with warnings"
+fi
+echo >> "$VAR_DIR/install.log"
 exit 0

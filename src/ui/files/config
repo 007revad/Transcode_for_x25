@@ -1,0 +1,19 @@
+{
+  "main.js": {
+    "SYNO.SDS._ThirdParty.App.TranscodeDrivers": {
+      "type": "app",
+      "title": "Transcode Drivers for x25",
+      "desc": "Drivers for Plex and Jellyfin hardware transcoding in DS425+ and DS225+",
+      "icon": "images/icon_{0}.png",
+      "appWindow": "SYNO.SDS.TranscodeDrivers.MainWindow",
+      "allowMultiInstance": false,
+      "allowStandalone": true,
+      "allUsers": true
+    },
+    "SYNO.SDS.TranscodeDrivers.MainWindow": {
+      "type": "lib",
+      "title": "Transcode Drivers for x25",
+      "icon": "images/icon_{0}.png"
+    }
+  }
+}
