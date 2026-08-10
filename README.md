@@ -11,10 +11,11 @@
 
 Installs the modules needed for Plex or Jellyfin hardware transcoding in DS425+ and DS225+ that Synology removed to save 20 cents per year.
 
-Version 3 is available as a script or package.
+Version 3 and later is available as a package or a script.
 
 ### Update
 
+Version 4 also supports DSM 7.4.
 Version 3 includes the HDR to SDR tone mapping bug fix.
 
 ## Package information
