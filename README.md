@@ -134,7 +134,7 @@ If the script won't run check the following:
 <br>
 
 <p align="center">Package installed</p>
-<p align="center"><img src="/images/pkg3.png"></p>
+<p align="center"><img src="/images/pkg4.png"></p>
 
 <br>
 
