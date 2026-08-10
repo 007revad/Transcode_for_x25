@@ -15,6 +15,7 @@ Version 3 and later is available as a package or a script.
 
 ### Update
 
+- Package version 4.1.16 and later no longer needs users to set permissions manually.
 - Version 4 also supports DSM 7.4.
 - Version 3 added the HDR to SDR tone mapping bug fix.
 
