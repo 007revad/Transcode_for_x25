@@ -121,10 +121,10 @@ If the script won't run check the following:
 
 ### Package Screenshots
 
-<p align="center">Permissions instructions</p>
-<p align="center"><img src="/images/pkg1.png"></p>
+<!--- <p align="center">Permissions instructions</p> --->
+<!--- <p align="center"><img src="/images/pkg1.png"></p> --->
 
-<br>
+<!--- <br> --->
 
 <p align="center">Installing package</p>
 <p align="center"><img src="/images/pkg2.png"></p>
@@ -138,6 +138,16 @@ If the script won't run check the following:
 
 <p align="center">Plex HW Transcoding working</p>
 <p align="center"><img src="/images/working.png"></p>
+
+<br>
+
+<p align="center">Package log</p>
+<p align="center"><img src="/images/log.png"></p>
+
+<br>
+
+<p align="center">Select text, right-click, copy</p>
+<p align="center"><img src="/images/copy_log.png"></p>
 
 ### Script Screenshots
 
