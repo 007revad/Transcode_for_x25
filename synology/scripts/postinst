@@ -9,7 +9,7 @@ VAR_DIR="/var/packages/$PKG_NAME/var"
 if [[ ! -f "$VAR_DIR/TranscodeDrivers.log" ]]; then
     touch "$VAR_DIR/TranscodeDrivers.log"
 fi
-chown "$VAR_DIR/TranscodeDrivers.log"
+chown "$PKG_NAME":"$PKG_NAME" "$VAR_DIR/TranscodeDrivers.log"
 
 # Log function
 log_message() {
