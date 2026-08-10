@@ -142,7 +142,7 @@ If the script won't run check the following:
 
 <br>
 
-<p align="center">Package log</p>
+<p align="center">Open button shows the log</p>
 <p align="center"><img src="/images/log.png"></p>
 
 <br>
