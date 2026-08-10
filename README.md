@@ -144,12 +144,12 @@ If the script won't run check the following:
 <br>
 
 <p align="center">Open button shows the log</p>
-<p align="center"><img src="/images/log2.png"></p>
+<p align="center"><img src="/images/log.png"></p>
 
 <br>
 
 <p align="center">Select text, right-click, copy</p>
-<p align="center"><img src="/images/copy_log2.png"></p>
+<p align="center"><img src="/images/copy_log.png"></p>
 
 ### Script Screenshots
 
