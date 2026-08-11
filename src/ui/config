@@ -8,7 +8,12 @@
       "appWindow": "SYNO.SDS.TranscodeDrivers.MainWindow",
       "allowMultiInstance": false,
       "allowStandalone": true,
-      "allUsers": true
+      "allUsers": true,
+      "texts": "texts",
+      "preloadTexts": [
+        "app:title_failed",
+        "app:load_failed"
+      ]
     },
     "SYNO.SDS.TranscodeDrivers.MainWindow": {
       "type": "lib",

@@ -1,0 +1,3 @@
+[app]
+title_failed="Failed to load Transcode Drivers"
+load_failed="Open 'Transcode Drivers for x25' to see the log."

@@ -21,6 +21,23 @@ log() {
     echo "[$(date '+%Y-%m-%d %H:%M:%S')] $1" >> "${LOG_FILE}"
 }
 
+# Desktop notification for a failed driver load, so users get a persistent
+# alert (not just the log) pointing them at the Open window. Failure-only
+# by design - no success notification, to avoid users learning to ignore it.
+notify_load_failed() {
+    if command -v synodsmnotify > /dev/null 2>&1; then
+        synodsmnotify -c SYNO.SDS._ThirdParty.App.TranscodeDrivers @administrators TranscodeDrivers:app:title_failed TranscodeDrivers:app:load_failed 2>/dev/null || true
+    fi
+}
+
+# bochs_drm is the emulated VGA driver used by Virtual Machine Manager
+# guests (and possibly other virtualized DSM installs). If it's loaded
+# it's actively driving that VM's display, so we don't touch the drm
+# stack at all rather than risk disrupting a running VM's console.
+virtual_display_active() {
+    /sbin/lsmod | grep -q "^bochs_drm "
+}
+
 insmod_if_exists() {
     if [ -f "$1" ]; then
         if /sbin/insmod "$1" 2>>"${LOG_FILE}"; then
@@ -37,12 +54,18 @@ insmod_if_exists() {
 }
 
 rmmod_if_loaded() {
+    # Optional $2: hint logged if the unload fails, for cases where we
+    # already know the likely cause (e.g. i915 held open by an active
+    # Plex/Jellyfin transcode).
     if /sbin/lsmod | grep -q "^${1} "; then
         if /sbin/rmmod "$1" 2>>"${LOG_FILE}"; then
             log "Unloaded ${1}"
             RMMOD_OK=$((RMMOD_OK + 1))
         else
             log "ERROR: Failed to unload ${1}"
+            if [ -n "$2" ]; then
+                log "$2"
+            fi
         fi
         RMMOD_TOTAL=$((RMMOD_TOTAL + 1))
     else
@@ -52,6 +75,12 @@ rmmod_if_loaded() {
 }
 
 load_pkg_modules() {
+    if virtual_display_active; then
+        log "Virtual display adapter is using the drivers. Stop Virtual Machine Manager, then start Transcode Drivers for x25 and then start Virtual Machine Manager"
+        notify_load_failed
+        return 1
+    fi
+
     log "Loading package driver modules"
     INSMOD_TOTAL=0
     INSMOD_OK=0
@@ -59,7 +88,7 @@ load_pkg_modules() {
     RMMOD_OK=0
 
     # Remove DSM's default modules (reverse load order)
-    rmmod_if_loaded i915
+    rmmod_if_loaded i915 "Plex or Jellyfin is using the drivers. Stop Plex or Jellyfin, then start Transcode Drivers for x25 and then start Plex or Jellyfin"
     rmmod_if_loaded drm_kms_helper
     rmmod_if_loaded drm
     rmmod_if_loaded drm_panel_orientation_quirks
@@ -79,9 +108,20 @@ load_pkg_modules() {
     insmod_if_exists "${PKG_MODULES}/i915-compat.ko"
     insmod_if_exists "${PKG_MODULES}/i915.ko"
     log "Loaded ${INSMOD_OK}/${INSMOD_TOTAL} package modules successfully"
+
+    if [ "$RMMOD_OK" -lt "$RMMOD_TOTAL" ] || [ "$INSMOD_OK" -lt "$INSMOD_TOTAL" ]; then
+        notify_load_failed
+        return 1
+    fi
+    return 0
 }
 
 restore_dsm_modules() {
+    if virtual_display_active; then
+        log "Virtual display adapter is using the drivers. Stop Virtual Machine Manager, then start Transcode Drivers for x25 and then start Virtual Machine Manager"
+        return 1
+    fi
+
     log "Restoring default driver modules"
     INSMOD_TOTAL=0
     INSMOD_OK=0
@@ -89,7 +129,7 @@ restore_dsm_modules() {
     RMMOD_OK=0
 
     # Remove package modules (reverse load order)
-    rmmod_if_loaded i915
+    rmmod_if_loaded i915 "Plex or Jellyfin is using the drivers. Stop Plex or Jellyfin, then start Transcode Drivers for x25 and then start Plex or Jellyfin"
     rmmod_if_loaded i915-compat
     rmmod_if_loaded intel-gtt
     rmmod_if_loaded ttm
@@ -109,21 +149,28 @@ restore_dsm_modules() {
     insmod_if_exists "${DSM_MODULES}/drm_kms_helper.ko"
     insmod_if_exists "${DSM_MODULES}/i915.ko"
     log "Restored ${INSMOD_OK}/${INSMOD_TOTAL} default modules successfully"
+
+    if [ "$RMMOD_OK" -lt "$RMMOD_TOTAL" ] || [ "$INSMOD_OK" -lt "$INSMOD_TOTAL" ]; then
+        return 1
+    fi
+    return 0
 }
 
 case "$1" in
     start)
         echo " " >> "${LOG_FILE}"
         log "${PKG_NAME} starting"
-        load_pkg_modules
-        log "${PKG_NAME} started"
+        if load_pkg_modules; then
+            log "${PKG_NAME} started"
+        fi
         exit 0
         ;;
     stop)
         echo " " >> "${LOG_FILE}"
         log "${PKG_NAME} stopping"
-        restore_dsm_modules
-        log "${PKG_NAME} stopped"
+        if restore_dsm_modules; then
+            log "${PKG_NAME} stopped"
+        fi
         exit 0
         ;;
 esac
