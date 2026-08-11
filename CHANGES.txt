@@ -1,3 +1,7 @@
+v4.2.21
+- Added VAAPI/QSV encoding.
+- Bug fix for skipping loading drivers with a `-` in their name.
+
 v4.1.20
 - Package: Now skips loading/unloading drivers if a driver is in use by VMM, Plex or Jellyfin.
   - Added desktop notification to check the log if driver loading/unloading failed when package starts.

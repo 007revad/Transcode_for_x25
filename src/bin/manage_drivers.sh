@@ -4,6 +4,7 @@
 
 PKG_MODULES="${SYNOPKG_PKGDEST}/lib/modules"
 DSM_MODULES="/usr/lib/modules"
+i915_BINS="${SYNOPKG_PKGDEST}/lib/firmware"
 
 PKG_NAME="TranscodeDrivers"
 PKG_ROOT="/var/packages/${PKG_NAME}"
@@ -38,6 +39,28 @@ virtual_display_active() {
     /sbin/lsmod | grep -q "^bochs_drm "
 }
 
+install_i915_bins() {
+    local src="$1"
+    local dest="/usr/lib/firmware/i915/$(basename "$src")"
+
+    if [ ! -f "$src" ]; then
+        log "Skipped $(basename "$src") (not found in package)"
+        return 0
+    fi
+
+    if [ -f "$dest" ]; then
+        log "$(basename "$src") already installed"
+        return 0
+    fi
+
+    if cp "$src" "$dest" && chown root:root "$dest" && chmod 0755 "$dest"; then
+        log "Installed $(basename "$src")"
+    else
+        log "ERROR: Failed to install $(basename "$src")"
+    fi
+    return 0
+}
+
 insmod_if_exists() {
     if [ -f "$1" ]; then
         if /sbin/insmod "$1" 2>>"${LOG_FILE}"; then
@@ -57,8 +80,11 @@ rmmod_if_loaded() {
     # Optional $2: hint logged if the unload fails, for cases where we
     # already know the likely cause (e.g. i915 held open by an active
     # Plex/Jellyfin transcode).
-    if /sbin/lsmod | grep -q "^${1} "; then
-        if /sbin/rmmod "$1" 2>>"${LOG_FILE}"; then
+
+rmmod_if_loaded() {
+    local mod="${1//-/_}"
+    if /sbin/lsmod | grep -q "^${mod} "; then
+        if /sbin/rmmod "$mod" 2>>"${LOG_FILE}"; then
             log "Unloaded ${1}"
             RMMOD_OK=$((RMMOD_OK + 1))
         else
@@ -160,6 +186,8 @@ case "$1" in
     start)
         echo " " >> "${LOG_FILE}"
         log "${PKG_NAME} starting"
+        install_i915_bins "${i915_BINS}/glk_guc_70.1.1.bin"
+        install_i915_bins "${i915_BINS}/glk_huc_4.0.0.bin"
         if load_pkg_modules; then
             log "${PKG_NAME} started"
         fi
