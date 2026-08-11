@@ -1,7 +1,7 @@
 v4.1.20
-- Now skips loading/unloading drivers if a driver is in use by VMM, Plex or Jellyfin.
+- Package: Now skips loading/unloading drivers if a driver is in use by VMM, Plex or Jellyfin.
   - Added desktop notification to check the log if driver loading/unloading failed when package starts.
-- Added better checks and log messages for when driver loading/unloading fails.
+- Package: Added better checks and log messages for when driver loading/unloading fails.
 
 v4.1.19
 - Bug fix for "Request to api.cgi failed" in package log (introduced in v4.1.18).
