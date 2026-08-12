@@ -2,13 +2,15 @@
 
 #set -eu
 
-PKG_MODULES="${SYNOPKG_PKGDEST}/lib/modules"
-DSM_MODULES="/usr/lib/modules"
-i915_BINS="${SYNOPKG_PKGDEST}/lib/firmware"
-
 PKG_NAME="TranscodeDrivers"
 PKG_ROOT="/var/packages/${PKG_NAME}"
-#PKG_VERSION=$(synopkg version "$PKG_NAME")
+TARGET_DIR="${PKG_ROOT}/target"
+
+PKG_MODULES="${TARGET_DIR}/lib/modules"
+i915_BINS="${TARGET_DIR}/lib/firmware"
+DSM_MODULES="/usr/lib/modules"
+
+PKG_VERSION=$(synopkg version "$PKG_NAME")
 DSM_MAJOR=$(get_key_value /etc.defaults/VERSION majorversion)
 if [[ "$DSM_MAJOR" -gt "6" ]]; then
     LOG_DIR="${PKG_ROOT}/var"
@@ -17,6 +19,21 @@ else
 fi
 LOG_FILE="${LOG_DIR}/${PKG_NAME}.log"
 
+DSM_VERSION="$(synogetkeyvalue /etc.defaults/VERSION productversion)"
+NAS_MODEL=$(synogetkeyvalue /etc.defaults/synoinfo.conf upnpmodelname 2>/dev/null)
+# Fallback for systems where upnpmodelname is unavailable
+if [[ -z "$NAS_MODEL" && -f /proc/sys/kernel/syno_hw_version ]]; then
+    NAS_MODEL=$(cat /proc/sys/kernel/syno_hw_version 2>/dev/null || echo "")
+    # Check for dodgy characters after model number
+    if [[ ${NAS_MODEL,,} =~ 'pv10-j'$ ]]; then  # GitHub issue #10
+        NAS_MODEL=${NAS_MODEL%??????}+          # replace last 6 chars with +
+    elif [[ ${NAS_MODEL} =~ '-j'$ ]]; then  # GitHub issue #2
+        NAS_MODEL=${NAS_MODEL%??}           # remove last 2 chars
+    fi
+fi
+if [[ -z "$NAS_MODEL" ]]; then
+    NAS_MODEL="Unknown_model"
+fi
 
 log() {
     echo "[$(date '+%Y-%m-%d %H:%M:%S')] $1" >> "${LOG_FILE}"
@@ -101,7 +118,7 @@ rmmod_if_loaded() {
 
 load_pkg_modules() {
     if virtual_display_active; then
-        log "Virtual display adapter is using the drivers. Stop Virtual Machine Manager, then start Transcode Drivers for x25 and then start Virtual Machine Manager"
+        log "DSM appears to be running as a virtual machine under a hypervisor (e.g. Proxmox, ESXi), and the emulated display (bochs_drm) is currently the active console GPU. Switch the hypervisor's console to serial output, or set the passed-through GPU as the primary display, then start Transcode Drivers for x25 again."
         notify_load_failed
         return 1
     fi
@@ -184,7 +201,8 @@ restore_dsm_modules() {
 case "$1" in
     start)
         echo " " >> "${LOG_FILE}"
-        log "${PKG_NAME} starting"
+        log "${PKG_NAME} ${PKG_VERSION} starting"
+        log "${NAS_MODEL} - DSM ${DSM_VERSION}"
         install_i915_bins "${i915_BINS}/glk_guc_70.1.1.bin"
         install_i915_bins "${i915_BINS}/glk_huc_4.0.0.bin"
         if load_pkg_modules; then
@@ -194,7 +212,8 @@ case "$1" in
         ;;
     stop)
         echo " " >> "${LOG_FILE}"
-        log "${PKG_NAME} stopping"
+        log "${PKG_NAME} ${PKG_VERSION} stopping"
+        log "${NAS_MODEL} - DSM ${DSM_VERSION}"
         if restore_dsm_modules; then
             log "${PKG_NAME} stopped"
         fi

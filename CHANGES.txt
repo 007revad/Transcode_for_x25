@@ -1,9 +1,14 @@
+v4.2.23
+- Package: Bug fix for loading the default drivers instead of the package's drivers (introduced in v4.1.16).
+- Package: Changed log message when DSM is running as a virtual machine under a hypervisor (Proxmox, ESXi).
+- Package: Added Synology model and DSM version to log.
+
 v4.2.22
-- Bug fix for bug introduced in v4.2.21.
+- Package: Bug fix for bug introduced in v4.2.21.
 
 v4.2.21
-- Bug fix for VAAPI/QSV encoding. Thanks @ArthorYCoed Issue #32
-- Bug fix for skipping loading drivers with a `-` in their name. Issue #16
+- Package: Bug fix for VAAPI/QSV encoding. Thanks @ArthorYCoed Issue #32
+- Package: Bug fix for skipping loading drivers with a `-` in their name. Issue #16
 
 v4.1.20
 - Package: Now skips loading/unloading drivers if a driver is in use by VMM, Plex or Jellyfin.
@@ -11,7 +16,7 @@ v4.1.20
 - Package: Added better checks and log messages for when driver loading/unloading fails.
 
 v4.1.19
-- Bug fix for "Request to api.cgi failed" in package log (introduced in v4.1.18).
+- Package: Bug fix for "Request to api.cgi failed" in package log (introduced in v4.1.18).
 
 v4.1.18
 - The package no longer needs users to set permissions manually.

@@ -6,7 +6,7 @@
 # https://www.blackvoid.club/content/files/2026/02/x25_hw_transcode_module_v2.zip
 #----------------------------------------------------------------------------------
 
-scriptver="v4.2.22"
+scriptver="v4.2.23"
 script=Transcode_for_x25
 repo="007revad/Transcode_for_x25"
 scriptname=transcode_for_x25
