@@ -8,7 +8,7 @@ i915_BINS="${SYNOPKG_PKGDEST}/lib/firmware"
 
 PKG_NAME="TranscodeDrivers"
 PKG_ROOT="/var/packages/${PKG_NAME}"
-PKG_VERSION=$(synopkg version "$PKG_NAME")
+#PKG_VERSION=$(synopkg version "$PKG_NAME")
 DSM_MAJOR=$(get_key_value /etc.defaults/VERSION majorversion)
 if [[ "$DSM_MAJOR" -gt "6" ]]; then
     LOG_DIR="${PKG_ROOT}/var"
@@ -41,7 +41,8 @@ virtual_display_active() {
 
 install_i915_bins() {
     local src="$1"
-    local dest="/usr/lib/firmware/i915/$(basename "$src")"
+    local dest
+    dest="/usr/lib/firmware/i915/$(basename "$src")"
 
     if [ ! -f "$src" ]; then
         log "Skipped $(basename "$src") (not found in package)"
@@ -80,8 +81,6 @@ rmmod_if_loaded() {
     # Optional $2: hint logged if the unload fails, for cases where we
     # already know the likely cause (e.g. i915 held open by an active
     # Plex/Jellyfin transcode).
-
-rmmod_if_loaded() {
     local mod="${1//-/_}"
     if /sbin/lsmod | grep -q "^${mod} "; then
         if /sbin/rmmod "$mod" 2>>"${LOG_FILE}"; then
