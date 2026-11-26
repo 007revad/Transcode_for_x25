@@ -17,7 +17,7 @@ jobs:
 
     steps:
       - name: Checkout
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
         with:
           fetch-depth: 0
 
@@ -74,7 +74,7 @@ jobs:
         if: steps.check_assets.outputs.spk_count == '0'
         run: |
           ls -l ./dist
-          rm ./dist/*_debug.spk
+          rm -f ./dist/*_debug.spk
           for f in ./dist/*.spk; do
             mv "$f" "./dist/Transcode_${{ steps.get_latest_tag.outputs.new_tag }}-DSM-7.3-geminilakenk.spk"
           done
@@ -82,7 +82,7 @@ jobs:
 
       - name: Upload Package
         if: steps.check_assets.outputs.spk_count == '0'
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v6
         with:
           name: Transcode_DSM-7.3-geminilakenk
           path: ./dist/*.spk

@@ -1,3 +1,6 @@
+v4.2.24
+- Package: Set minimum window width and height.
+
 v4.2.23
 - Package: Bug fix for loading the default drivers instead of the package's drivers (introduced in v4.1.16).
 - Package: Changed log message when DSM is running as a virtual machine under a hypervisor (Proxmox, ESXi).

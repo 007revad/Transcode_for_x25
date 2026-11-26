@@ -56,6 +56,8 @@ Ext.define("SYNO.SDS.TranscodeDrivers.MainWindow", {
             showHelp: false,
             width: 640,
             height: 480,
+            minWidth: 640,
+            minHeight: 480,
             html: this.buildHtml(),
             listeners: {
                 afterrender: {

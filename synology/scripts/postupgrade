@@ -1,4 +1,11 @@
-#!/bin/sh
-# Copyright (C) 2000-2017 Synology Inc. All rights reserved.
+#!/bin/bash
+# See preupgrade's comment for why this file needs to exist at all.
+#
+# Re-running postinst's steps after an upgrade (setuid helper
+# verification, webman symlink, exec permissions) is correct here -
+# they're all idempotent, and nothing about this package's state needs
+# migration between versions.
+
+exec "$(dirname "$0")/postinst" "$@"
 
 exit 0

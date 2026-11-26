@@ -2,8 +2,7 @@
  * transcode-helper.c
  *
  * Narrow setuid-root launcher for Transcode Drivers.
- * Installed with owner root:root, mode 6755 (setuid) by postinst,
- * which itself always runs as root during DSM package install.
+ * Installed by DSM owner root:<package>, mode 6550 (setuid), from conf/privilege.
  *
  * This replaces the sudoers-based escalation: it does not depend on
  * /usr/bin/sudo being present, and only ever executes one fixed,

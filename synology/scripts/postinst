@@ -16,6 +16,8 @@ log_message() {
     echo "[$(date '+%Y-%m-%d %H:%M:%S')] $1" >> "$VAR_DIR/install.log" 2>/dev/null || echo "$1"
 }
 
+mkdir -p "$VAR_DIR" 2>/dev/null || true
+echo "" >> "$VAR_DIR/install.log"
 log_message "Post-installation starting for package: $PKG_NAME"
 
 # Remove spurious files injected by the package builder

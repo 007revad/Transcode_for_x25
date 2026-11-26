@@ -10,13 +10,10 @@ PKG_MODULES="${TARGET_DIR}/lib/modules"
 i915_BINS="${TARGET_DIR}/lib/firmware"
 DSM_MODULES="/usr/lib/modules"
 
-PKG_VERSION=$(synopkg version "$PKG_NAME")
-DSM_MAJOR=$(get_key_value /etc.defaults/VERSION majorversion)
-if [[ "$DSM_MAJOR" -gt "6" ]]; then
-    LOG_DIR="${PKG_ROOT}/var"
-else
-    LOG_DIR="${PKG_ROOT}/etc"
-fi
+#PKG_VERSION=$(synopkg version "$PKG_NAME")  # 0.3 seconds slower
+PKG_VERSION=$(synogetkeyvalue "${PKG_ROOT}/INFO" version)
+
+LOG_DIR="${PKG_ROOT}/var"
 LOG_FILE="${LOG_DIR}/${PKG_NAME}.log"
 
 DSM_VERSION="$(synogetkeyvalue /etc.defaults/VERSION productversion)"
